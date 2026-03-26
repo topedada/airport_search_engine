@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\toped\\OneDrive\\Documents\\airport-search-engine\\airport-search-engine\\Main_Code\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{337C08FE-6A93-4A3E-BFB6-A0DF61B91031}|Main_Code\\Main_Code.vcxproj|C:\\Users\\toped\\OneDrive\\Documents\\airport-search-engine\\airport-search-engine\\Main_Code\\Main_Code\\Main_Code.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{337C08FE-6A93-4A3E-BFB6-A0DF61B91031}|Main_Code\\Main_Code.vcxproj|solutionrelative:Main_Code\\Main_Code.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Main_Code.cpp",
+              "DocumentMoniker": "C:\\Users\\toped\\OneDrive\\Documents\\airport-search-engine\\airport-search-engine\\Main_Code\\Main_Code\\Main_Code.cpp",
+              "RelativeDocumentMoniker": "Main_Code\\Main_Code.cpp",
+              "ToolTip": "C:\\Users\\toped\\OneDrive\\Documents\\airport-search-engine\\airport-search-engine\\Main_Code\\Main_Code\\Main_Code.cpp",
+              "RelativeToolTip": "Main_Code\\Main_Code.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-03-26T19:32:04.605Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
