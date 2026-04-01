@@ -32,12 +32,12 @@ int toInt(const std::string& s) {
 
 // -------- Load CSV Function --------
 void loadCSV(const std::string& filename) {
-    std::ifstream file(filename)
+    std::ifstream file(filename);
 
-        if (!file.is_open()) {
-            std::cout << "Error: Could not open file: " << filename << "\n";
-            return;
-        }
+    if (!file.is_open()) {
+        std::cout << "Error: Could not open file: " << filename << "\n";
+        return;
+    }
 
     std::string line;
 
@@ -50,22 +50,23 @@ void loadCSV(const std::string& filename) {
 
         Airport a;
 
+        // Adjust order here to match your CSV!
         getline(ss, a.name, ',');
         getline(ss, a.country, ',');
         getline(ss, a.iata, ',');
-        getline(ss, a.type, ',')
-            getline(ss, a.municipality, ',');
+        getline(ss, a.type, ',');
+        getline(ss, a.municipality, ',');
 
         getline(ss, token, ',');
-        a.latitude = stod(token);
+        a.latitude = toDouble(token);
 
         getline(ss, token, ',');
         a.longitude = toDouble(token);
 
         getline(ss, token, ',');
-        a.elevation = toInt(token)
+        a.elevation = toInt(token);
 
-            airports.push_back(a)
+        airports.push_back(a);
     }
 
     std::cout << "Loaded " << airports.size() << " airports.\n";
@@ -87,9 +88,11 @@ void printSample(int count = 5) {
 
 // -------- Main Function --------
 int main() {
-    loadCSV("airports.csv")
+    
+    loadCSV("../data/airports");
 
-        printSample();
+    // Print first 5 airports to check
+    printSample();
 
     return 0;
 }
