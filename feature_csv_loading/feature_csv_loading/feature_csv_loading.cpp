@@ -3,8 +3,8 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <filesystem> // For absolute path debug
 
-// -------- Airport Struct --------
 struct Airport {
     std::string name;
     std::string country;
@@ -16,10 +16,8 @@ struct Airport {
     int elevation;
 };
 
-// -------- Global Vector --------
 std::vector<Airport> airports;
 
-// -------- Helper Conversion Functions --------
 double toDouble(const std::string& s) {
     try { return std::stod(s); }
     catch (...) { return 0.0; }
@@ -30,40 +28,38 @@ int toInt(const std::string& s) {
     catch (...) { return 0; }
 }
 
-// -------- Load CSV Function --------
 void loadCSV(const std::string& filename) {
-    std::ifstream file(filename);
+    std::cout << "Trying to open CSV file at: "
+        << std::filesystem::absolute(filename) << "\n";
 
+    std::ifstream file(filename);
     if (!file.is_open()) {
         std::cout << "Error: Could not open file: " << filename << "\n";
+        std::cout << "Make sure the file exists and is fully local.\n";
         return;
     }
 
     std::string line;
+    std::getline(file, line); // skip header
 
-    // Skip header row
-    getline(file, line);
-
-    while (getline(file, line)) {
+    while (std::getline(file, line)) {
         std::stringstream ss(line);
         std::string token;
-
         Airport a;
 
-        // Adjust order here to match your CSV!
-        getline(ss, a.name, ',');
-        getline(ss, a.country, ',');
-        getline(ss, a.iata, ',');
-        getline(ss, a.type, ',');
-        getline(ss, a.municipality, ',');
+        std::getline(ss, a.name, ',');
+        std::getline(ss, a.country, ',');
+        std::getline(ss, a.iata, ',');
+        std::getline(ss, a.type, ',');
+        std::getline(ss, a.municipality, ',');
 
-        getline(ss, token, ',');
+        std::getline(ss, token, ',');
         a.latitude = toDouble(token);
 
-        getline(ss, token, ',');
+        std::getline(ss, token, ',');
         a.longitude = toDouble(token);
 
-        getline(ss, token, ',');
+        std::getline(ss, token, ',');
         a.elevation = toInt(token);
 
         airports.push_back(a);
@@ -72,7 +68,6 @@ void loadCSV(const std::string& filename) {
     std::cout << "Loaded " << airports.size() << " airports.\n";
 }
 
-// -------- Debug Print Function --------
 void printSample(int count = 5) {
     for (int i = 0; i < count && i < airports.size(); i++) {
         std::cout << "Name: " << airports[i].name << "\n";
@@ -80,19 +75,16 @@ void printSample(int count = 5) {
         std::cout << "IATA: " << airports[i].iata << "\n";
         std::cout << "Type: " << airports[i].type << "\n";
         std::cout << "Municipality: " << airports[i].municipality << "\n";
-        std::cout << "Lat: " << airports[i].latitude << ", Lon: " << airports[i].longitude << "\n";
+        std::cout << "Lat: " << airports[i].latitude
+            << ", Lon: " << airports[i].longitude << "\n";
         std::cout << "Elevation: " << airports[i].elevation << "\n";
         std::cout << "----------------------\n";
     }
 }
 
-// -------- Main Function --------
 int main() {
-    
-    loadCSV("../data/airports");
-
-    // Print first 5 airports to check
+    std::string csvPath = "../../data/airports.csv";
+    loadCSV(csvPath);
     printSample();
-
     return 0;
 }
