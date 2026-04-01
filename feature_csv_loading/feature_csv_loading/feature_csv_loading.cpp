@@ -3,8 +3,9 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-#include <filesystem> // For absolute path debug
+#include <filesystem> // For debug absolute path
 
+// -------- Airport Struct --------
 struct Airport {
     std::string name;
     std::string country;
@@ -18,6 +19,7 @@ struct Airport {
 
 std::vector<Airport> airports;
 
+// -------- Helper Conversion Functions --------
 double toDouble(const std::string& s) {
     try { return std::stod(s); }
     catch (...) { return 0.0; }
@@ -28,6 +30,7 @@ int toInt(const std::string& s) {
     catch (...) { return 0; }
 }
 
+// -------- Load CSV Function --------
 void loadCSV(const std::string& filename) {
     std::cout << "Trying to open CSV file at: "
         << std::filesystem::absolute(filename) << "\n";
@@ -35,7 +38,6 @@ void loadCSV(const std::string& filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
         std::cout << "Error: Could not open file: " << filename << "\n";
-        std::cout << "Make sure the file exists and is fully local.\n";
         return;
     }
 
@@ -47,20 +49,28 @@ void loadCSV(const std::string& filename) {
         std::string token;
         Airport a;
 
-        std::getline(ss, a.name, ',');
-        std::getline(ss, a.country, ',');
-        std::getline(ss, a.iata, ',');
-        std::getline(ss, a.type, ',');
-        std::getline(ss, a.municipality, ',');
+        getline(ss, token, ','); // 1 ident, ignore
+        getline(ss, a.type, ','); // 2 type
+        getline(ss, a.name, ','); // 3 name
+        getline(ss, token, ',');
+        a.elevation = toInt(token); // 4 elevation_ft
+        getline(ss, token, ','); // 5 continent, ignore
+        getline(ss, a.country, ','); // 6 iso_country
+        getline(ss, token, ','); // 7 iso_region, ignore
+        getline(ss, a.municipality, ','); // 8 municipality
+        getline(ss, token, ','); // 9 icao_code, ignore
+        getline(ss, a.iata, ','); // 10 iata_code
+        getline(ss, token, ','); // 11 gps_code, ignore
+        getline(ss, token, ','); // 12 local_code, ignore
+        getline(ss, token, ','); // 13 coordinates
 
-        std::getline(ss, token, ',');
-        a.latitude = toDouble(token);
-
-        std::getline(ss, token, ',');
-        a.longitude = toDouble(token);
-
-        std::getline(ss, token, ',');
-        a.elevation = toInt(token);
+        // Split coordinates into latitude and longitude
+        std::stringstream coord(token);
+        std::string latStr, lonStr;
+        getline(coord, latStr, ' '); // space-separated
+        getline(coord, lonStr, ' ');
+        a.latitude = toDouble(latStr);
+        a.longitude = toDouble(lonStr);
 
         airports.push_back(a);
     }
@@ -68,23 +78,49 @@ void loadCSV(const std::string& filename) {
     std::cout << "Loaded " << airports.size() << " airports.\n";
 }
 
-void printSample(int count = 5) {
-    for (int i = 0; i < count && i < airports.size(); i++) {
-        std::cout << "Name: " << airports[i].name << "\n";
-        std::cout << "Country: " << airports[i].country << "\n";
-        std::cout << "IATA: " << airports[i].iata << "\n";
-        std::cout << "Type: " << airports[i].type << "\n";
-        std::cout << "Municipality: " << airports[i].municipality << "\n";
-        std::cout << "Lat: " << airports[i].latitude
-            << ", Lon: " << airports[i].longitude << "\n";
-        std::cout << "Elevation: " << airports[i].elevation << "\n";
-        std::cout << "----------------------\n";
+// -------- Debug Print Function --------
+void printAirport(const Airport& a) {
+    std::cout << "Name: " << a.name << "\n";
+    std::cout << "Country: " << a.country << "\n";
+    std::cout << "IATA: " << a.iata << "\n";
+    std::cout << "Type: " << a.type << "\n";
+    std::cout << "Municipality: " << a.municipality << "\n";
+    std::cout << "Lat: " << a.latitude << ", Lon: " << a.longitude << "\n";
+    std::cout << "Elevation: " << a.elevation << "\n";
+    std::cout << "----------------------\n";
+}
+
+// -------- Search Functions --------
+void searchByCountry(const std::string& countryCode) {
+    std::cout << "Airports in country: " << countryCode << "\n";
+    for (const auto& a : airports) {
+        if (a.country == countryCode) printAirport(a);
     }
 }
 
+void searchByName(const std::string& partialName) {
+    std::cout << "Airports matching name: " << partialName << "\n";
+    for (const auto& a : airports) {
+        if (a.name.find(partialName) != std::string::npos) printAirport(a);
+    }
+}
+
+void searchByIATA(const std::string& code) {
+    std::cout << "Airport with IATA code: " << code << "\n";
+    for (const auto& a : airports) {
+        if (a.iata == code) printAirport(a);
+    }
+}
+
+// -------- Main Function --------
 int main() {
     std::string csvPath = "../../data/airports.csv";
     loadCSV(csvPath);
-    printSample();
+
+    // Test searches
+    searchByCountry("US");       // Example: United States
+    searchByName("Heathrow");    // Example: partial name
+    searchByIATA("LHR");         // Example: IATA code
+
     return 0;
 }
