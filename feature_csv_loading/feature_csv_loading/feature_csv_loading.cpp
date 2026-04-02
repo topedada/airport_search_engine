@@ -117,10 +117,36 @@ int main() {
     std::string csvPath = "../../data/airports.csv";
     loadCSV(csvPath);
 
-    // Test searches
-    searchByCountry("US");       // Example: United States
-    searchByName("Heathrow");    // Example: partial name
-    searchByIATA("LHR");         // Example: IATA code
+    int choice;
+    std::string input;
+
+    while (true) {
+        std::cout << "\n--- Airport Search Menu ---\n";
+        std::cout << "1. Search by Country\n";
+        std::cout << "2. Search by Name\n";
+        std::cout << "3. Search by IATA\n";
+        std::cout << "4. Exit\n";
+        std::cout << "Enter choice: ";
+        std::cin >> choice;
+
+        if (choice == 4) break;
+
+        std::cout << "Enter search value: ";
+        std::cin >> input;
+
+        if (choice == 1) {
+            searchByCountry(input);
+        }
+        else if (choice == 2) {
+            searchByName(input);
+        }
+        else if (choice == 3) {
+            searchByIATA(input);
+        }
+        else {
+            std::cout << "Invalid choice\n";
+        }
+    }
 
     return 0;
 }
