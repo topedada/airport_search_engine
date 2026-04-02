@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include <filesystem> // For debug absolute path
+#include <limits>
 
 // -------- Airport Struct --------
 struct Airport {
@@ -132,7 +133,8 @@ int main() {
         if (choice == 4) break;
 
         std::cout << "Enter search value: ";
-        std::cin >> input;
+        std::cin.ignore();
+        std::getline(std::cin, input);
 
         if (choice == 1) {
             searchByCountry(input);
