@@ -3,10 +3,8 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-#include <filesystem> // For debug absolute path
 #include <limits>
 
-// -------- Airport Struct --------
 struct Airport {
     std::string name;
     std::string country;
@@ -20,7 +18,7 @@ struct Airport {
 
 std::vector<Airport> airports;
 
-// -------- Helper Conversion Functions --------
+// -------- Helpers --------
 double toDouble(const std::string& s) {
     try { return std::stod(s); }
     catch (...) { return 0.0; }
@@ -31,47 +29,51 @@ int toInt(const std::string& s) {
     catch (...) { return 0; }
 }
 
-// -------- Load CSV Function --------
+// -------- Load CSV --------
 void loadCSV(const std::string& filename) {
-    std::cout << "Trying to open CSV file at: "
-        << std::filesystem::absolute(filename) << "\n";
-
     std::ifstream file(filename);
+
     if (!file.is_open()) {
-        std::cout << "Error: Could not open file: " << filename << "\n";
+        std::cout << "Error opening file.\n";
         return;
     }
 
     std::string line;
-    std::getline(file, line); // skip header
+    getline(file, line); // skip header
 
-    while (std::getline(file, line)) {
+    while (getline(file, line)) {
         std::stringstream ss(line);
         std::string token;
         Airport a;
 
-        getline(ss, token, ','); // 1 ident, ignore
-        getline(ss, a.type, ','); // 2 type
-        getline(ss, a.name, ','); // 3 name
-        getline(ss, token, ',');
-        a.elevation = toInt(token); // 4 elevation_ft
-        getline(ss, token, ','); // 5 continent, ignore
-        getline(ss, a.country, ','); // 6 iso_country
-        getline(ss, token, ','); // 7 iso_region, ignore
-        getline(ss, a.municipality, ','); // 8 municipality
-        getline(ss, token, ','); // 9 icao_code, ignore
-        getline(ss, a.iata, ','); // 10 iata_code
-        getline(ss, token, ','); // 11 gps_code, ignore
-        getline(ss, token, ','); // 12 local_code, ignore
-        getline(ss, token, ','); // 13 coordinates
+        getline(ss, token, ','); // ident
+        getline(ss, a.type, ',');
+        getline(ss, a.name, ',');
 
-        // Split coordinates into latitude and longitude
+        getline(ss, token, ',');
+        a.elevation = toInt(token);
+
+        getline(ss, token, ','); // continent
+        getline(ss, a.country, ',');
+
+        getline(ss, token, ','); // region
+        getline(ss, a.municipality, ',');
+
+        getline(ss, token, ','); // icao
+        getline(ss, a.iata, ',');
+
+        getline(ss, token, ','); // gps
+        getline(ss, token, ','); // local
+        getline(ss, token, ','); // coordinates
+
+        // split coordinates
         std::stringstream coord(token);
-        std::string latStr, lonStr;
-        getline(coord, latStr, ' '); // space-separated
-        getline(coord, lonStr, ' ');
-        a.latitude = toDouble(latStr);
-        a.longitude = toDouble(lonStr);
+        std::string lat, lon;
+        getline(coord, lat, ' ');
+        getline(coord, lon, ' ');
+
+        a.latitude = toDouble(lat);
+        a.longitude = toDouble(lon);
 
         airports.push_back(a);
     }
@@ -79,75 +81,86 @@ void loadCSV(const std::string& filename) {
     std::cout << "Loaded " << airports.size() << " airports.\n";
 }
 
-// -------- Debug Print Function --------
+// -------- Print --------
 void printAirport(const Airport& a) {
-    std::cout << "Name: " << a.name << "\n";
-    std::cout << "Country: " << a.country << "\n";
-    std::cout << "IATA: " << a.iata << "\n";
-    std::cout << "Type: " << a.type << "\n";
-    std::cout << "Municipality: " << a.municipality << "\n";
-    std::cout << "Lat: " << a.latitude << ", Lon: " << a.longitude << "\n";
-    std::cout << "Elevation: " << a.elevation << "\n";
-    std::cout << "----------------------\n";
+    std::cout << a.name << " (" << a.iata << ") - "
+        << a.country << " - " << a.type << "\n";
 }
 
 // -------- Search Functions --------
 void searchByCountry(const std::string& countryCode) {
-    std::cout << "Airports in country: " << countryCode << "\n";
+    bool found = false;
+    int count = 0;
+
     for (const auto& a : airports) {
-        if (a.country == countryCode) printAirport(a);
+        if (a.country == countryCode) {
+            printAirport(a);
+            found = true;
+            count++;
+            if (count >= 10) break;
+        }
     }
+
+    if (!found) std::cout << "No airports found.\n";
 }
 
-void searchByName(const std::string& partialName) {
-    std::cout << "Airports matching name: " << partialName << "\n";
+void searchByName(const std::string& name) {
+    bool found = false;
+    int count = 0;
+
     for (const auto& a : airports) {
-        if (a.name.find(partialName) != std::string::npos) printAirport(a);
+        if (a.name.find(name) != std::string::npos) {
+            printAirport(a);
+            found = true;
+            count++;
+            if (count >= 10) break;
+        }
     }
+
+    if (!found) std::cout << "No airports found.\n";
 }
 
 void searchByIATA(const std::string& code) {
-    std::cout << "Airport with IATA code: " << code << "\n";
+    bool found = false;
+
     for (const auto& a : airports) {
-        if (a.iata == code) printAirport(a);
+        if (a.iata == code) {
+            printAirport(a);
+            found = true;
+            break;
+        }
     }
+
+    if (!found) std::cout << "No airport found.\n";
 }
 
-// -------- Main Function --------
+// -------- Main Menu --------
 int main() {
-    std::string csvPath = "../../data/airports.csv";
-    loadCSV(csvPath);
+    loadCSV("../../data/airports.csv");
 
     int choice;
     std::string input;
 
     while (true) {
-        std::cout << "\n--- Airport Search Menu ---\n";
+        std::cout << "\n--- Airport Menu ---\n";
         std::cout << "1. Search by Country\n";
         std::cout << "2. Search by Name\n";
         std::cout << "3. Search by IATA\n";
         std::cout << "4. Exit\n";
-        std::cout << "Enter choice: ";
+        std::cout << "Choice: ";
         std::cin >> choice;
 
         if (choice == 4) break;
 
-        std::cout << "Enter search value: ";
-        std::cin.ignore();
-        std::getline(std::cin, input);
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-        if (choice == 1) {
-            searchByCountry(input);
-        }
-        else if (choice == 2) {
-            searchByName(input);
-        }
-        else if (choice == 3) {
-            searchByIATA(input);
-        }
-        else {
-            std::cout << "Invalid choice\n";
-        }
+        std::cout << "Enter search: ";
+        getline(std::cin, input);
+
+        if (choice == 1) searchByCountry(input);
+        else if (choice == 2) searchByName(input);
+        else if (choice == 3) searchByIATA(input);
+        else std::cout << "Invalid option\n";
     }
 
     return 0;
