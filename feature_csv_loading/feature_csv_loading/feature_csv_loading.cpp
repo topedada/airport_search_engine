@@ -18,6 +18,13 @@ struct Airport {
 
 std::vector<Airport> airports;
 
+std::string toLower(std::string s) {
+    for (char& c : s) {
+        c = tolower(c);
+    }
+    return s;
+}
+
 // -------- Helpers --------
 double toDouble(const std::string& s) {
     try { return std::stod(s); }
@@ -104,7 +111,7 @@ void searchByCountry(const std::string& countryCode) {
     int count = 0;
 
     for (const auto& a : airports) {
-        if (a.country == countryCode) {
+        if (toLower(a.country) == toLower(countryCode)) {
             printAirport(a);
             count++;
             if (count >= 10) break;
@@ -118,7 +125,7 @@ void searchByName(const std::string& name) {
     int count = 0;
 
     for (const auto& a : airports) {
-        if (a.name.find(name) != std::string::npos) {
+        if (toLower(a.name).find(toLower(name)) != std::string::npos) {
             printAirport(a);
             count++;
             if (count >= 10) break;
@@ -130,7 +137,7 @@ void searchByName(const std::string& name) {
 
 void searchByIATA(const std::string& code) {
     for (const auto& a : airports) {
-        if (a.iata == code) {
+        if (toLower(a.iata) == toLower(code)) {
             printAirport(a);
             return;
         }
