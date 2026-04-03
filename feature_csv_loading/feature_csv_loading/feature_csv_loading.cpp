@@ -64,13 +64,18 @@ void loadCSV(const std::string& filename) {
 
         getline(ss, token, ','); // gps
         getline(ss, token, ','); // local
-        getline(ss, token, ','); // coordinates
 
-        // split coordinates
+        // ✅ FIXED PART (coordinates)
+        getline(ss, token); // read rest of line
+
+        // remove quotes if present
+        if (!token.empty() && token.front() == '"') token.erase(0, 1);
+        if (!token.empty() && token.back() == '"') token.pop_back();
+
         std::stringstream coord(token);
         std::string lat, lon;
-        getline(coord, lat, ' ');
-        getline(coord, lon, ' ');
+        getline(coord, lat, ',');
+        getline(coord, lon, ',');
 
         a.latitude = toDouble(lat);
         a.longitude = toDouble(lon);
@@ -83,58 +88,58 @@ void loadCSV(const std::string& filename) {
 
 // -------- Print --------
 void printAirport(const Airport& a) {
-    std::cout << a.name << " (" << a.iata << ") - "
-        << a.country << " - " << a.type << "\n";
+    std::cout << "Name: " << a.name << "\n";
+    std::cout << "Country: " << a.country << "\n";
+    std::cout << "IATA: " << a.iata << "\n";
+    std::cout << "Type: " << a.type << "\n";
+    std::cout << "Municipality: " << a.municipality << "\n";
+    std::cout << "Lat: " << a.latitude
+        << ", Lon: " << a.longitude << "\n";
+    std::cout << "Elevation: " << a.elevation << "\n";
+    std::cout << "----------------------\n";
 }
 
 // -------- Search Functions --------
 void searchByCountry(const std::string& countryCode) {
-    bool found = false;
     int count = 0;
 
     for (const auto& a : airports) {
         if (a.country == countryCode) {
             printAirport(a);
-            found = true;
             count++;
             if (count >= 10) break;
         }
     }
 
-    if (!found) std::cout << "No airports found.\n";
+    if (count == 0) std::cout << "No airports found.\n";
 }
 
 void searchByName(const std::string& name) {
-    bool found = false;
     int count = 0;
 
     for (const auto& a : airports) {
         if (a.name.find(name) != std::string::npos) {
             printAirport(a);
-            found = true;
             count++;
             if (count >= 10) break;
         }
     }
 
-    if (!found) std::cout << "No airports found.\n";
+    if (count == 0) std::cout << "No airports found.\n";
 }
 
 void searchByIATA(const std::string& code) {
-    bool found = false;
-
     for (const auto& a : airports) {
         if (a.iata == code) {
             printAirport(a);
-            found = true;
-            break;
+            return;
         }
     }
 
-    if (!found) std::cout << "No airport found.\n";
+    std::cout << "No airport found.\n";
 }
 
-// -------- Main Menu --------
+// -------- Main --------
 int main() {
     loadCSV("../../data/airports.csv");
 
