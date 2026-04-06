@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\toped\\OneDrive\\Documents\\airport-search-engine\\airport-search-engine\\feature_csv_loading\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A4FF9D67-F25E-40D7-BA26-10D2730E63C4}|feature_csv_loading\\feature_csv_loading.vcxproj|C:\\Users\\toped\\OneDrive\\Documents\\airport-search-engine\\airport-search-engine\\feature_csv_loading\\feature_csv_loading\\feature_csv_loading.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A4FF9D67-F25E-40D7-BA26-10D2730E63C4}|feature_csv_loading\\feature_csv_loading.vcxproj|solutionrelative:feature_csv_loading\\feature_csv_loading.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "feature_csv_loading.cpp",
+              "DocumentMoniker": "C:\\Users\\toped\\OneDrive\\Documents\\airport-search-engine\\airport-search-engine\\feature_csv_loading\\feature_csv_loading\\feature_csv_loading.cpp",
+              "RelativeDocumentMoniker": "feature_csv_loading\\feature_csv_loading.cpp",
+              "ToolTip": "C:\\Users\\toped\\OneDrive\\Documents\\airport-search-engine\\airport-search-engine\\feature_csv_loading\\feature_csv_loading\\feature_csv_loading.cpp",
+              "RelativeToolTip": "feature_csv_loading\\feature_csv_loading.cpp",
+              "ViewState": "AgIAAHIAAAAAAAAAAAAAAHgAAAA4AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-03-30T17:57:45.192Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
