@@ -72,7 +72,6 @@ void loadCSV(const std::string& filename, std::vector<Airport>& airports) {
         getline(ss, token, ','); // gps
         getline(ss, token, ','); // local
 
-        // coordinates
         getline(ss, token);
         if (!token.empty() && token.front() == '"') token.erase(0, 1);
         if (!token.empty() && token.back() == '"') token.pop_back();
@@ -139,6 +138,37 @@ void searchByIATA(const std::vector<Airport>& airports, const std::string& code)
     std::cout << "No airport found.\n";
 }
 
+// ---------------- PLACEHOLDERS (SAFE FOR MERGING) ----------------
+void bookTicket() {
+    std::cout << "[Booking system coming soon]\n";
+}
+
+void viewBookings() {
+    std::cout << "[View bookings coming soon]\n";
+}
+
+// ---------------- Admin Login ----------------
+void adminMenu() {
+    std::string password;
+
+    while (true) {
+        std::cout << "Enter admin password (or type 'back' to return): ";
+        std::getline(std::cin, password);
+
+        if (password == "back") return;
+
+        if (password == "password01") {
+            std::cout << "Access granted.\n";
+            // Placeholder for future admin features
+            std::cout << "[Admin features coming soon]\n";
+            return;
+        }
+        else {
+            std::cout << "Incorrect password, try again.\n";
+        }
+    }
+}
+
 // ---------------- Main ----------------
 int main() {
     std::vector<Airport> airports;
@@ -152,20 +182,28 @@ int main() {
         std::cout << "1. Search by Country\n";
         std::cout << "2. Search by Name\n";
         std::cout << "3. Search by IATA\n";
-        std::cout << "4. Exit\n";
+        std::cout << "4. Book Ticket\n";
+        std::cout << "5. View Bookings\n";
+        std::cout << "6. Admin\n";
+        std::cout << "7. Exit\n";
         std::cout << "Choice: ";
         std::cin >> choice;
 
-        if (choice == 4) break;
+        if (choice == 7) break;
 
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-        std::cout << "Enter search: ";
-        getline(std::cin, input);
+        if (choice >= 1 && choice <= 3) {
+            std::cout << "Enter search: ";
+            getline(std::cin, input);
 
-        if (choice == 1) searchByCountry(airports, input);
-        else if (choice == 2) searchByName(airports, input);
-        else if (choice == 3) searchByIATA(airports, input);
+            if (choice == 1) searchByCountry(airports, input);
+            else if (choice == 2) searchByName(airports, input);
+            else if (choice == 3) searchByIATA(airports, input);
+        }
+        else if (choice == 4) bookTicket();
+        else if (choice == 5) viewBookings();
+        else if (choice == 6) adminMenu();
         else std::cout << "Invalid option\n";
     }
 
