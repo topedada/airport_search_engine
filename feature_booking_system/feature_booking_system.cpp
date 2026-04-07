@@ -1,8 +1,9 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <fstream>
+#include <sstream>
 #include <limits>
-#include <algorithm>
 
 // ---------------- Structs ----------------
 struct Airport {
@@ -18,6 +19,7 @@ struct Booking {
 };
 
 // ---------------- Data ----------------
+std::vector<Airport> airports;
 std::vector<Booking> bookings;
 
 // ---------------- Helpers ----------------
@@ -27,16 +29,46 @@ std::string toLower(const std::string& s) {
     return result;
 }
 
-// Check if IATA exists in airports vector
-bool isValidIATA(const std::vector<Airport>& airports, const std::string& code) {
+// Check if the IATA exists in loaded airports
+bool isValidIATA(const std::string& code) {
     for (const auto& a : airports) {
         if (toLower(a.iata) == toLower(code)) return true;
     }
     return false;
 }
 
+// ---------------- Load CSV ----------------
+void loadCSV(const std::string& filepath) {
+    std::ifstream file(filepath);
+    if (!file.is_open()) {
+        std::cout << "Failed to open file: " << filepath << "\n";
+        return;
+    }
+
+    std::string line;
+    getline(file, line); // skip header
+
+    while (getline(file, line)) {
+        std::stringstream ss(line);
+        std::string token;
+        Airport a;
+
+        getline(ss, token, ',');        // ident (skip)
+        getline(ss, a.iata, ',');       // IATA column
+        getline(ss, a.name, ',');       // Name column
+        getline(ss, a.country, ',');    // Country column
+
+        // Skip empty IATA codes
+        if (a.iata.empty()) continue;
+
+        airports.push_back(a);
+    }
+
+    std::cout << "Loaded " << airports.size() << " airports.\n";
+}
+
 // ---------------- Book Ticket ----------------
-void bookTicket(const std::vector<Airport>& airports) {
+void bookTicket() {
     Booking b;
     std::cout << "Enter your name: ";
     std::getline(std::cin, b.name);
@@ -45,17 +77,17 @@ void bookTicket(const std::vector<Airport>& airports) {
     do {
         std::cout << "Enter departure airport (IATA): ";
         std::getline(std::cin, b.fromIATA);
-        if (!isValidIATA(airports, b.fromIATA))
+        if (!isValidIATA(b.fromIATA))
             std::cout << "Invalid IATA. Please enter a valid airport code.\n";
-    } while (!isValidIATA(airports, b.fromIATA));
+    } while (!isValidIATA(b.fromIATA));
 
     // Validate TO IATA
     do {
         std::cout << "Enter destination airport (IATA): ";
         std::getline(std::cin, b.toIATA);
-        if (!isValidIATA(airports, b.toIATA))
+        if (!isValidIATA(b.toIATA))
             std::cout << "Invalid IATA. Please enter a valid airport code.\n";
-    } while (!isValidIATA(airports, b.toIATA));
+    } while (!isValidIATA(b.toIATA));
 
     bookings.push_back(b);
     std::cout << "Booking successful!\n";
@@ -69,7 +101,7 @@ void viewBookings() {
     }
 
     std::cout << "\n--- Bookings ---\n";
-    for (int i = 0; i < bookings.size(); i++) {
+    for (size_t i = 0; i < bookings.size(); i++) {
         std::cout << "Booking " << i + 1 << "\n";
         std::cout << "Name: " << bookings[i].name << "\n";
         std::cout << "From: " << bookings[i].fromIATA << "\n";
@@ -80,12 +112,9 @@ void viewBookings() {
 
 // ---------------- Main ----------------
 int main() {
-    // Example airport list loaded from CSV
-    std::vector<Airport> airports = {
-        {"Heathrow", "UK", "LHR"},
-        {"John F. Kennedy", "USA", "JFK"},
-        {"Charles de Gaulle", "France", "CDG"}
-    };
+    // CSV is in parent folder of feature_booking_system
+    std::string csvPath = "../airports"; // or "../airports.csv" if your file has .csv extension
+    loadCSV(csvPath);
 
     int choice;
     while (true) {
@@ -97,7 +126,7 @@ int main() {
         std::cin >> choice;
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-        if (choice == 1) bookTicket(airports);
+        if (choice == 1) bookTicket();
         else if (choice == 2) viewBookings();
         else if (choice == 3) break;
         else std::cout << "Invalid choice.\n";
