@@ -1,20 +1,72 @@
-// feature_booking_system.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include <iostream>
+#include <vector>
+#include <string>
+#include <limits>
 
-int main()
-{
-    std::cout << "Hello World!\n";
+// ---------------- Struct ----------------
+struct Booking {
+    std::string name;
+    std::string fromIATA;
+    std::string toIATA;
+};
+
+// ---------------- Data ----------------
+std::vector<Booking> bookings;
+
+// ---------------- Book Ticket ----------------
+void bookTicket() {
+    Booking b;
+
+    std::cout << "Enter your name: ";
+    std::getline(std::cin, b.name);
+
+    std::cout << "Enter departure airport (IATA): ";
+    std::getline(std::cin, b.fromIATA);
+
+    std::cout << "Enter destination airport (IATA): ";
+    std::getline(std::cin, b.toIATA);
+
+    bookings.push_back(b);
+
+    std::cout << "Booking successful!\n";
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
+// ---------------- View Bookings ----------------
+void viewBookings() {
+    if (bookings.empty()) {
+        std::cout << "No bookings found.\n";
+        return;
+    }
 
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+    std::cout << "\n--- Bookings ---\n";
+
+    for (int i = 0; i < bookings.size(); i++) {
+        std::cout << "Booking " << i + 1 << "\n";
+        std::cout << "Name: " << bookings[i].name << "\n";
+        std::cout << "From: " << bookings[i].fromIATA << "\n";
+        std::cout << "To: " << bookings[i].toIATA << "\n";
+        std::cout << "----------------------\n";
+    }
+}
+
+// ---------------- Main ----------------
+int main() {
+    int choice;
+
+    while (true) {
+        std::cout << "\n--- Booking Menu ---\n";
+        std::cout << "1. Book a Ticket\n";
+        std::cout << "2. View Bookings\n";
+        std::cout << "3. Exit\n";
+        std::cout << "Choice: ";
+        std::cin >> choice;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // clear newline
+
+        if (choice == 1) bookTicket();
+        else if (choice == 2) viewBookings();
+        else if (choice == 3) break;
+        else std::cout << "Invalid choice.\n";
+    }
+
+    return 0;
+}

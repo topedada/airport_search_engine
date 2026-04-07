@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="feature_booking_system.vcxproj" />
+  <Project Path="feature_booking_system.vcxproj" Id="dcd57b72-cf39-44a2-8385-c88b98e27092" />
 </Solution>
