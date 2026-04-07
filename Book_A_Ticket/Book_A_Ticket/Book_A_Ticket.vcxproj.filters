@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="feature_booking_system.cpp">
+    <ClCompile Include="Book_A_Ticket.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
