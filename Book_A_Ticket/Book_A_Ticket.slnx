@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="Book_A_Ticket/Book_A_Ticket.vcxproj" />
+  <Project Path="Book_A_Ticket/Book_A_Ticket.vcxproj" Id="baf4b3b6-8652-4b13-9e75-243f55370219" />
 </Solution>
