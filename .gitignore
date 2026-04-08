@@ -41,7 +41,11 @@
 *.dwo
 
 .vs/
-bin/
-obj/
-*.user
+*.vcxproj.user
 *.suo
+*.log
+*.tmp
+*.exe
+x64/
+Debug/
+Release/
