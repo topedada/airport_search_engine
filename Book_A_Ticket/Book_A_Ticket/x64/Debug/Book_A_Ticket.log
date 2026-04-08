@@ -1,2 +1,3 @@
 ﻿  Book_A_Ticket.cpp
-  Book_A_Ticket.vcxproj -> C:\Users\toped\OneDrive\Documents\airport-search-engine\airport-search-engine\Book_A_Ticket\x64\Debug\Book_A_Ticket.exe
+MSVCRTD.lib(exe_main.obj) : error LNK2019: unresolved external symbol main referenced in function "int __cdecl invoke_main(void)" (?invoke_main@@YAHXZ)
+C:\Users\toped\OneDrive\Documents\airport-search-engine\airport-search-engine\Book_A_Ticket\x64\Debug\Book_A_Ticket.exe : fatal error LNK1120: 1 unresolved externals
