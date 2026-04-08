@@ -19,4 +19,19 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Book_A_Ticket\Book_A_Ticket.slnx" />
+    <None Include="..\..\feature_csv_loading\feature_csv_loading.slnx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Airport.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Book_A_Ticket.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadCSV.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>

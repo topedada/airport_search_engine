@@ -1,20 +1,38 @@
-// Develop_Code.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include <iostream>
+#include <limits>
+#include "Airport.h"          // your common header
+#include "Book_A_Ticket.h"    // contains bookTicket() and viewBookings()
+#include "LoadCSV.h"          // contains loadCSV() and airports vector
 
-int main()
-{
-    std::cout << "Hello World!\n";
+int main() {
+    // Load the CSV file using the function in LoadCSV.cpp
+    loadCSV("../../data/airports.csv");
+
+    int choice;
+    std::string input;
+
+    while (true) {
+        std::cout << "\n--- Airport Menu ---\n";
+        std::cout << "1. Book Ticket\n";
+        std::cout << "2. View Bookings\n";
+        std::cout << "3. Exit\n";
+        std::cout << "Choice: ";
+        std::cin >> choice;
+
+        if (choice == 3) break;
+
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // clear input buffer
+
+        if (choice == 1) {
+            bookTicket();      // Calls the function in Book_A_Ticket.cpp
+        }
+        else if (choice == 2) {
+            viewBookings();    // Calls the function in Book_A_Ticket.cpp
+        }
+        else {
+            std::cout << "Invalid option\n";
+        }
+    }
+
+    return 0;
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
