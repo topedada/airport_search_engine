@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <limits>
+
 #include "LoadCSV.h"
 #include "Book_A_Ticket.h"
 
@@ -22,17 +23,28 @@ void adminMenu() {
 
 int main() {
     std::vector<Airport> airports;
+    std::vector<Booking> bookings;
 
-    // Load airports
+    // Load airports CSV
     loadCSV("../../data/airports.csv", airports);
+
+    if (airports.empty()) {
+        std::cout << "No airports loaded. Exiting.\n";
+        return 1;
+    }
 
     int choice;
     std::string input;
 
     while (true) {
         std::cout << "\n--- Airport Menu ---\n";
-        std::cout << "1. Search by Country\n2. Search by Name\n3. Search by IATA\n";
-        std::cout << "4. Book Ticket\n5. View Bookings\n6. Admin\n7. Exit\n";
+        std::cout << "1. Search by Country\n";
+        std::cout << "2. Search by Name\n";
+        std::cout << "3. Search by IATA\n";
+        std::cout << "4. Book Ticket\n";
+        std::cout << "5. View Bookings\n";
+        std::cout << "6. Admin\n";
+        std::cout << "7. Exit\n";
         std::cout << "Choice: ";
         std::cin >> choice;
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -42,14 +54,23 @@ int main() {
         if (choice >= 1 && choice <= 3) {
             std::cout << "Enter search: ";
             std::getline(std::cin, input);
+
             if (choice == 1) searchByCountry(airports, input);
             else if (choice == 2) searchByName(airports, input);
             else if (choice == 3) searchByIATA(airports, input);
         }
-        else if (choice == 4) bookTicket();
-        else if (choice == 5) viewBookings();
-        else if (choice == 6) adminMenu();
-        else std::cout << "Invalid option\n";
+        else if (choice == 4) {
+            bookTicket(airports, bookings);
+        }
+        else if (choice == 5) {
+            viewBookings(bookings);
+        }
+        else if (choice == 6) {
+            adminMenu();
+        }
+        else {
+            std::cout << "Invalid option\n";
+        }
     }
 
     std::cout << "Exiting program.\n";
