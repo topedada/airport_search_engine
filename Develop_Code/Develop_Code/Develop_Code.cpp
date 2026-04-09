@@ -1,8 +1,8 @@
 #include <iostream>
 #include <limits>
-#include "Airport.h"          // your common header
-#include "Book_A_Ticket.h"    // contains bookTicket() and viewBookings()
-#include "LoadCSV.h"          // contains loadCSV() and airports vector
+#include "Airport.h"
+#include "Book_A_Ticket.h"
+#include "LoadCSV.h"
 
 int main() {
     // Load the CSV file using the function in LoadCSV.cpp

@@ -1,11 +1,24 @@
-#include <iostream>
+#include "LoadCSV.h"
 #include <fstream>
 #include <sstream>
-#include <vector>
-#include "Airport.h"  // include the same header
+#include <iostream>
 
-// ---------------- Load CSV ----------------
-void loadCSV(const std::string& filename, std::vector<Airport>& airports) {
+// Define the airports vector
+std::vector<Airport> airports;
+
+// Helpers
+int toInt(const std::string& s) {
+    try { return std::stoi(s); }
+    catch (...) { return 0; }
+}
+
+double toDouble(const std::string& s) {
+    try { return std::stod(s); }
+    catch (...) { return 0.0; }
+}
+
+// Load CSV function
+void loadCSV(const std::string& filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
         std::cout << "Failed to open " << filename << "\n";
@@ -20,12 +33,12 @@ void loadCSV(const std::string& filename, std::vector<Airport>& airports) {
         std::string token;
         Airport a;
 
-        // Skip first 9 columns to reach iata_code (column J, index 9)
+        // Skip first 9 columns to reach IATA code (column J, index 9)
         for (int i = 0; i < 9; i++) getline(ss, token, ',');
 
         getline(ss, a.iata, ','); // column J: iata_code
 
-        // Optionally store name, country, type, etc.
+        // Optional: initialize other fields as empty
         a.name = ""; a.country = ""; a.type = ""; a.municipality = "";
         a.latitude = 0; a.longitude = 0; a.elevation = 0;
 
