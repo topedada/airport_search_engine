@@ -1,26 +1,8 @@
 #include "LoadCSV.h"
 #include <fstream>
 #include <sstream>
-#include <limits>
 
-// ---------------- Helpers ----------------
-std::string toLower(const std::string& s) {
-    std::string result = s;
-    for (char& c : result) c = tolower(c);
-    return result;
-}
-
-double toDouble(const std::string& s) {
-    try { return std::stod(s); }
-    catch (...) { return 0.0; }
-}
-
-int toInt(const std::string& s) {
-    try { return std::stoi(s); }
-    catch (...) { return 0; }
-}
-
-// ---------------- Load CSV ----------------
+// ---------------- Load CSV Implementation ----------------
 void loadCSV(const std::string& filename, std::vector<Airport>& airports) {
     std::ifstream file(filename);
     if (!file.is_open()) {
@@ -39,23 +21,18 @@ void loadCSV(const std::string& filename, std::vector<Airport>& airports) {
         getline(ss, token, ','); // ident
         getline(ss, a.type, ',');
         getline(ss, a.name, ',');
-
         getline(ss, token, ',');
-        a.elevation = toInt(token);
-
+        a.elevation = token.empty() ? 0 : std::stoi(token);
         getline(ss, token, ','); // continent
         getline(ss, a.country, ',');
-
         getline(ss, token, ','); // region
         getline(ss, a.municipality, ',');
-
         getline(ss, token, ','); // icao
         getline(ss, a.iata, ',');
-
         getline(ss, token, ','); // gps
         getline(ss, token, ','); // local
+        getline(ss, token);       // coordinates
 
-        getline(ss, token);
         if (!token.empty() && token.front() == '"') token.erase(0, 1);
         if (!token.empty() && token.back() == '"') token.pop_back();
 
@@ -64,8 +41,8 @@ void loadCSV(const std::string& filename, std::vector<Airport>& airports) {
         getline(coord, lat, ',');
         getline(coord, lon, ',');
 
-        a.latitude = toDouble(lat);
-        a.longitude = toDouble(lon);
+        a.latitude = lat.empty() ? 0.0 : std::stod(lat);
+        a.longitude = lon.empty() ? 0.0 : std::stod(lon);
 
         airports.push_back(a);
     }
@@ -73,7 +50,7 @@ void loadCSV(const std::string& filename, std::vector<Airport>& airports) {
     std::cout << "Loaded " << airports.size() << " airports.\n";
 }
 
-// ---------------- Print ----------------
+// ---------------- Print Function ----------------
 void printAirport(const Airport& a) {
     std::cout << "Name: " << a.name << "\n";
     std::cout << "Country: " << a.country << "\n";
@@ -91,8 +68,7 @@ void searchByCountry(const std::vector<Airport>& airports, const std::string& co
     for (const auto& a : airports) {
         if (toLower(a.country) == toLower(countryCode)) {
             printAirport(a);
-            count++;
-            if (count >= 10) break;
+            if (++count >= 10) break;
         }
     }
     if (count == 0) std::cout << "No airports found.\n";
@@ -103,8 +79,7 @@ void searchByName(const std::vector<Airport>& airports, const std::string& name)
     for (const auto& a : airports) {
         if (toLower(a.name).find(toLower(name)) != std::string::npos) {
             printAirport(a);
-            count++;
-            if (count >= 10) break;
+            if (++count >= 10) break;
         }
     }
     if (count == 0) std::cout << "No airports found.\n";

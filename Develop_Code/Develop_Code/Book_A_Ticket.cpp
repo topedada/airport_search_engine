@@ -1,13 +1,8 @@
 #include "Book_A_Ticket.h"
+#include "LoadCSV.h"
 #include <iostream>
 
-// ---------------- Helpers ----------------
-std::string toLower(const std::string& s) {
-    std::string result = s;
-    for (char& c : result) c = tolower(c);
-    return result;
-}
-
+// ---------------- Booking Functions ----------------
 bool iataExists(const std::vector<Airport>& airports, const std::string& code) {
     for (const auto& a : airports) {
         if (toLower(a.iata) == toLower(code)) return true;
@@ -15,7 +10,6 @@ bool iataExists(const std::vector<Airport>& airports, const std::string& code) {
     return false;
 }
 
-// ---------------- Booking Functions ----------------
 void bookTicket(const std::vector<Airport>& airports, std::vector<Booking>& bookings) {
     std::string passenger, from, to;
 

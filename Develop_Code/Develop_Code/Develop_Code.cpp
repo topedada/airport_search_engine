@@ -2,35 +2,18 @@
 #include <vector>
 #include <string>
 #include <limits>
-
-#include "LoadCSV.h"
-#include "Book_A_Ticket.h"
-
-// ---------------- Admin Menu ----------------
-void adminMenu() {
-    std::string password;
-    while (true) {
-        std::cout << "Enter admin password (or 'back' to return): ";
-        std::getline(std::cin, password);
-        if (password == "back") return;
-        if (password == "password01") {
-            std::cout << "Access granted.\n[Admin features coming soon]\n";
-            return;
-        }
-        std::cout << "Incorrect password, try again.\n";
-    }
-}
+#include "LoadCSV.h"          // Airport struct, toLower, search & print
+#include "Book_A_Ticket.h"    // bookTicket() and viewBookings()
 
 int main() {
     std::vector<Airport> airports;
     std::vector<Booking> bookings;
 
-    // Load airports CSV
+    // ---------------- Load CSV ----------------
     loadCSV("../../data/airports.csv", airports);
-
     if (airports.empty()) {
-        std::cout << "No airports loaded. Exiting.\n";
-        return 1;
+        std::cout << "No airports loaded. Exiting program.\n";
+        return 1; // Stop program if CSV failed
     }
 
     int choice;
@@ -46,8 +29,9 @@ int main() {
         std::cout << "6. Admin\n";
         std::cout << "7. Exit\n";
         std::cout << "Choice: ";
+
         std::cin >> choice;
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // flush newline
 
         if (choice == 7) break;
 
@@ -60,19 +44,31 @@ int main() {
             else if (choice == 3) searchByIATA(airports, input);
         }
         else if (choice == 4) {
-            bookTicket(airports, bookings);
+            bookTicket(airports, bookings); // pass airports and bookings
         }
         else if (choice == 5) {
-            viewBookings(bookings);
+            viewBookings(bookings); // display all bookings
         }
         else if (choice == 6) {
-            adminMenu();
+            std::string password;
+            while (true) {
+                std::cout << "Enter admin password (or type 'back' to return): ";
+                std::getline(std::cin, password);
+                if (password == "back") break;
+                if (password == "password01") {
+                    std::cout << "Access granted. [Admin features coming soon]\n";
+                    break;
+                }
+                else {
+                    std::cout << "Incorrect password, try again.\n";
+                }
+            }
         }
         else {
             std::cout << "Invalid option\n";
         }
     }
 
-    std::cout << "Exiting program.\n";
+    std::cout << "Goodbye!\n";
     return 0;
 }
