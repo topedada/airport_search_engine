@@ -2,7 +2,6 @@
 #include <vector>
 #include <string>
 #include <limits>
-
 #include "LoadCSV.h"
 #include "Book_A_Ticket.h"
 
@@ -25,7 +24,7 @@ int main() {
     std::vector<Airport> airports;
 
     // Load airports
-    loadCSV("data/airports.csv", airports);
+    loadCSV("../../data/airports.csv", airports);
 
     int choice;
     std::string input;
