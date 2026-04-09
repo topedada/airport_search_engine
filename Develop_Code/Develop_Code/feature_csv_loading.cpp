@@ -1,6 +1,7 @@
 #include "LoadCSV.h"
 #include <fstream>
 #include <sstream>
+#include <iostream>
 
 // ---------------- Load CSV Implementation ----------------
 void loadCSV(const std::string& filename, std::vector<Airport>& airports) {
@@ -21,8 +22,16 @@ void loadCSV(const std::string& filename, std::vector<Airport>& airports) {
         getline(ss, token, ','); // ident
         getline(ss, a.type, ',');
         getline(ss, a.name, ',');
-        getline(ss, token, ',');
-        a.elevation = token.empty() ? 0 : std::stoi(token);
+        getline(ss, token, ','); // elevation
+
+        // Safe conversion for elevation
+        try {
+            a.elevation = token.empty() ? 0 : std::stoi(token);
+        }
+        catch (...) {
+            a.elevation = 0;
+        }
+
         getline(ss, token, ','); // continent
         getline(ss, a.country, ',');
         getline(ss, token, ','); // region
@@ -33,16 +42,29 @@ void loadCSV(const std::string& filename, std::vector<Airport>& airports) {
         getline(ss, token, ','); // local
         getline(ss, token);       // coordinates
 
+        // Remove surrounding quotes
         if (!token.empty() && token.front() == '"') token.erase(0, 1);
         if (!token.empty() && token.back() == '"') token.pop_back();
 
+        // Safe conversion for coordinates
         std::stringstream coord(token);
         std::string lat, lon;
         getline(coord, lat, ',');
         getline(coord, lon, ',');
 
-        a.latitude = lat.empty() ? 0.0 : std::stod(lat);
-        a.longitude = lon.empty() ? 0.0 : std::stod(lon);
+        try {
+            a.latitude = lat.empty() ? 0.0 : std::stod(lat);
+        }
+        catch (...) {
+            a.latitude = 0.0;
+        }
+
+        try {
+            a.longitude = lon.empty() ? 0.0 : std::stod(lon);
+        }
+        catch (...) {
+            a.longitude = 0.0;
+        }
 
         airports.push_back(a);
     }

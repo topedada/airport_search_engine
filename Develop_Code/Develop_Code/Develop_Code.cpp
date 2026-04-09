@@ -2,8 +2,8 @@
 #include <vector>
 #include <string>
 #include <limits>
-#include "LoadCSV.h"          // Airport struct, toLower, search & print
-#include "Book_A_Ticket.h"    // bookTicket() and viewBookings()
+#include "LoadCSV.h"
+#include "Book_A_Ticket.h"
 
 int main() {
     std::vector<Airport> airports;
@@ -13,7 +13,8 @@ int main() {
     loadCSV("../../data/airports.csv", airports);
     if (airports.empty()) {
         std::cout << "No airports loaded. Exiting program.\n";
-        return 1; // Stop program if CSV failed
+        system("pause"); // keeps console open
+        return 1;
     }
 
     int choice;
@@ -43,12 +44,8 @@ int main() {
             else if (choice == 2) searchByName(airports, input);
             else if (choice == 3) searchByIATA(airports, input);
         }
-        else if (choice == 4) {
-            bookTicket(airports, bookings); // pass airports and bookings
-        }
-        else if (choice == 5) {
-            viewBookings(bookings); // display all bookings
-        }
+        else if (choice == 4) bookTicket(airports, bookings);
+        else if (choice == 5) viewBookings(bookings);
         else if (choice == 6) {
             std::string password;
             while (true) {

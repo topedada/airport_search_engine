@@ -22,6 +22,11 @@ void bookTicket(const std::vector<Airport>& airports, std::vector<Booking>& book
     std::cout << "Enter TO airport IATA code: ";
     std::getline(std::cin, to);
 
+    if (passenger.empty() || from.empty() || to.empty()) {
+        std::cout << "All fields are required.\n";
+        return;
+    }
+
     if (!iataExists(airports, from)) {
         std::cout << "FROM airport code not valid.\n";
         return;

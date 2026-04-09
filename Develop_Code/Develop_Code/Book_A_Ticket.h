@@ -1,15 +1,13 @@
 #pragma once
 #include <vector>
-#include <string>
-#include "LoadCSV.h"  // so we can use Airport struct
+#include "Airport.h"
 
-// ---------------- Booking Struct ----------------
 struct Booking {
     std::string passenger;
     std::string fromIATA;
     std::string toIATA;
 };
 
-// ---------------- Functions ----------------
+bool iataExists(const std::vector<Airport>& airports, const std::string& code);
 void bookTicket(const std::vector<Airport>& airports, std::vector<Booking>& bookings);
 void viewBookings(const std::vector<Booking>& bookings);
