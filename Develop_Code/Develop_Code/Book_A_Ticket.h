@@ -8,6 +8,7 @@ struct Booking {
     std::string passenger;
     std::string fromIATA;
     std::string toIATA;
+    double distance; // NEW
 };
 
 // ---------------- Functions ----------------

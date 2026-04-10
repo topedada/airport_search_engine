@@ -2,8 +2,32 @@
 #include "LoadCSV.h"
 #include <iostream>
 #include <fstream>
+#include <cmath>
 
-// ---------------- Booking Functions ----------------
+// -------- Distance --------
+double toRadians(double degree) {
+    return degree * 3.141592653589793 / 180.0;
+}
+
+double calculateDistance(const Airport& a, const Airport& b) {
+    double lat1 = toRadians(a.latitude);
+    double lon1 = toRadians(a.longitude);
+    double lat2 = toRadians(b.latitude);
+    double lon2 = toRadians(b.longitude);
+
+    double dLat = lat2 - lat1;
+    double dLon = lon2 - lon1;
+
+    double h = sin(dLat / 2) * sin(dLat / 2) +
+        cos(lat1) * cos(lat2) *
+        sin(dLon / 2) * sin(dLon / 2);
+
+    double c = 2 * atan2(sqrt(h), sqrt(1 - h));
+
+    return 6371 * c; // KM
+}
+
+// -------- Helper --------
 bool iataExists(const std::vector<Airport>& airports, const std::string& code) {
     for (const auto& a : airports) {
         if (toLower(a.iata) == toLower(code)) return true;
@@ -11,6 +35,7 @@ bool iataExists(const std::vector<Airport>& airports, const std::string& code) {
     return false;
 }
 
+// -------- Book Ticket --------
 void bookTicket(const std::vector<Airport>& airports, std::vector<Booking>& bookings) {
     std::string passenger, from, to;
 
@@ -28,22 +53,34 @@ void bookTicket(const std::vector<Airport>& airports, std::vector<Booking>& book
         return;
     }
 
-    if (!iataExists(airports, from)) {
+    const Airport* fromAirport = nullptr;
+    const Airport* toAirport = nullptr;
+
+    for (const auto& a : airports) {
+        if (toLower(a.iata) == toLower(from)) fromAirport = &a;
+        if (toLower(a.iata) == toLower(to)) toAirport = &a;
+    }
+
+    if (!fromAirport) {
         std::cout << "FROM airport code not valid.\n";
         return;
     }
 
-    if (!iataExists(airports, to)) {
+    if (!toAirport) {
         std::cout << "TO airport code not valid.\n";
         return;
     }
 
-    bookings.push_back({ passenger, from, to });
+    double distance = calculateDistance(*fromAirport, *toAirport);
+
+    bookings.push_back({ passenger, from, to, distance });
 
     std::cout << "Booking confirmed for " << passenger
         << " from " << from << " to " << to << "\n";
+    std::cout << "Distance: " << distance << " km\n";
 }
 
+// -------- View Bookings --------
 void viewBookings(const std::vector<Booking>& bookings) {
     if (bookings.empty()) {
         std::cout << "No bookings yet.\n";
@@ -53,29 +90,30 @@ void viewBookings(const std::vector<Booking>& bookings) {
     for (const auto& b : bookings) {
         std::cout << b.passenger << ": "
             << b.fromIATA << " -> "
-            << b.toIATA << "\n";
+            << b.toIATA
+            << " | Distance: " << b.distance << " km\n";
     }
 }
 
-// ---------------- Save Bookings ----------------
+// -------- Save Bookings --------
 void saveBookingsToCSV(const std::vector<Booking>& bookings, const std::string& filename) {
-    std::ofstream file(filename, std::ios::app); // append mode
+    std::ofstream file(filename, std::ios::app);
 
     if (!file.is_open()) {
         std::cout << "Failed to open " << filename << "\n";
         return;
     }
 
-    // Write header only if file is empty
     file.seekp(0, std::ios::end);
     if (file.tellp() == 0) {
-        file << "Passenger,FromIATA,ToIATA\n";
+        file << "Passenger,FromIATA,ToIATA,Distance\n";
     }
 
     for (const auto& b : bookings) {
         file << b.passenger << ","
             << b.fromIATA << ","
-            << b.toIATA << "\n";
+            << b.toIATA << ","
+            << b.distance << "\n";
     }
 
     std::cout << "Bookings saved to " << filename << "\n";
