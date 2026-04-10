@@ -11,9 +11,10 @@ int main() {
 
     // ---------------- Load CSV ----------------
     loadCSV("../../data/airports.csv", airports);
+
     if (airports.empty()) {
         std::cout << "No airports loaded. Exiting program.\n";
-        system("pause"); // keeps console open
+        system("pause");
         return 1;
     }
 
@@ -28,13 +29,14 @@ int main() {
         std::cout << "4. Book Ticket\n";
         std::cout << "5. View Bookings\n";
         std::cout << "6. Admin\n";
-        std::cout << "7. Exit\n";
+        std::cout << "7. Save Bookings to CSV\n";
+        std::cout << "8. Exit\n";
         std::cout << "Choice: ";
 
         std::cin >> choice;
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // flush newline
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-        if (choice == 7) break;
+        if (choice == 8) break;
 
         if (choice >= 1 && choice <= 3) {
             std::cout << "Enter search: ";
@@ -44,14 +46,20 @@ int main() {
             else if (choice == 2) searchByName(airports, input);
             else if (choice == 3) searchByIATA(airports, input);
         }
-        else if (choice == 4) bookTicket(airports, bookings);
-        else if (choice == 5) viewBookings(bookings);
+        else if (choice == 4) {
+            bookTicket(airports, bookings);
+        }
+        else if (choice == 5) {
+            viewBookings(bookings);
+        }
         else if (choice == 6) {
             std::string password;
             while (true) {
                 std::cout << "Enter admin password (or type 'back' to return): ";
                 std::getline(std::cin, password);
+
                 if (password == "back") break;
+
                 if (password == "password01") {
                     std::cout << "Access granted. [Admin features coming soon]\n";
                     break;
@@ -60,6 +68,12 @@ int main() {
                     std::cout << "Incorrect password, try again.\n";
                 }
             }
+        }
+        else if (choice == 7) {
+            saveBookingsToCSV(bookings, "../../data/FlightRecords.csv");
+
+            // Optional: prevent duplicate saves
+            bookings.clear();
         }
         else {
             std::cout << "Invalid option\n";
