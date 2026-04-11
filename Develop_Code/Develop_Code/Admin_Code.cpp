@@ -2,8 +2,9 @@
 #include <iostream>
 #include <fstream>
 
-// ---------------- SAVE CSV ----------------
+// ---------------- SAVE CSV (OPTION 1: ORIGINAL FORMAT) ----------------
 void saveCSV(const std::string& filename, const std::vector<Airport>& airports) {
+
     std::ofstream file(filename);
 
     if (!file.is_open()) {
@@ -11,20 +12,26 @@ void saveCSV(const std::string& filename, const std::vector<Airport>& airports) 
         return;
     }
 
-    file << "name,country,iata,type,municipality,latitude,longitude,elevation\n";
+    // ORIGINAL CSV HEADER (IMPORTANT)
+    file << "ident,type,name,elevation_ft,continent,iso_country,iso_region,municipality,icao_code,iata_code,gps_code,local_code,coordinates\n";
 
     for (const auto& a : airports) {
-        file << a.name << ","
-            << a.country << ","
-            << a.iata << ","
+        file << "0" << ","              // ident placeholder
             << a.type << ","
+            << a.name << ","
+            << a.elevation << ","
+            << "NA" << ","             // continent placeholder
+            << a.country << ","
+            << "NA" << ","             // iso_region placeholder
             << a.municipality << ","
-            << a.latitude << ","
-            << a.longitude << ","
-            << a.elevation << "\n";
+            << "NA" << ","             // icao_code placeholder
+            << a.iata << ","
+            << "NA" << ","             // gps_code
+            << "NA" << ","             // local_code
+            << a.latitude << ";" << a.longitude << "\n"; // coordinates
     }
 
-    std::cout << "Saved successfully.\n";
+    std::cout << "Saved successfully (original format preserved).\n";
 }
 
 // ---------------- ADMIN MENU ----------------
@@ -35,7 +42,7 @@ void adminAirportMenu(std::vector<Airport>& airports) {
         std::cout << "\n--- ADMIN MENU ---\n";
         std::cout << "1. Add Airport\n";
         std::cout << "2. Delete Airport\n";
-        std::cout << "3. Save\n";
+        std::cout << "3. Save Changes\n";
         std::cout << "4. Exit\n";
         std::cout << "Choice: ";
 
@@ -81,7 +88,7 @@ void adminAirportMenu(std::vector<Airport>& airports) {
         else if (choice == 2) {
             std::string code;
 
-            std::cout << "Enter IATA to delete: ";
+            std::cout << "Enter IATA code to delete: ";
             std::getline(std::cin, code);
 
             for (int i = 0; i < airports.size(); i++) {

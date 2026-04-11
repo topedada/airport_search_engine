@@ -10,11 +10,10 @@ int main() {
     std::vector<Airport> airports;
     std::vector<Booking> bookings;
 
-    // ---------------- LOAD DATA ----------------
     loadCSV("../../data/airports.csv", airports);
 
     if (airports.empty()) {
-        std::cout << "No airports loaded. Exiting.\n";
+        std::cout << "No airports loaded.\n";
         return 1;
     }
 
@@ -29,43 +28,45 @@ int main() {
         std::cout << "4. Book Ticket\n";
         std::cout << "5. View Bookings\n";
         std::cout << "6. Admin Menu\n";
-        std::cout << "7. Exit\n";
+        std::cout << "7. Save Bookings to CSV\n";
+        std::cout << "8. Exit\n";
         std::cout << "Choice: ";
 
         std::cin >> choice;
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-        if (choice == 7) break;
+        if (choice == 8) break;
 
-        // ---------------- SEARCH ----------------
         if (choice >= 1 && choice <= 3) {
             std::cout << "Enter search: ";
             std::getline(std::cin, input);
 
             if (choice == 1) searchByCountry(airports, input);
             else if (choice == 2) searchByName(airports, input);
-            else if (choice == 3) searchByIATA(airports, input);
+            else searchByIATA(airports, input);
         }
 
-        // ---------------- BOOK ----------------
         else if (choice == 4) {
             bookTicket(airports, bookings);
         }
 
-        // ---------------- VIEW ----------------
         else if (choice == 5) {
             viewBookings(bookings);
         }
 
-        // ---------------- ADMIN ----------------
         else if (choice == 6) {
             std::string password;
-            std::cout << "Enter admin password (or back): ";
+            std::cout << "Enter admin password: ";
             std::getline(std::cin, password);
 
             if (password == "password01") {
                 adminAirportMenu(airports);
             }
+        }
+        else if (choice == 7) {
+            saveBookingsToCSV(bookings, "../../data/FlightRecords.csv");
+
+            std::cout << "All bookings saved \n";
         }
 
         else {
@@ -73,6 +74,5 @@ int main() {
         }
     }
 
-    std::cout << "Goodbye!\n";
     return 0;
 }
