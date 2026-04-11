@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{15e7b29c-ff9e-4e76-b0cb-0d54b32eb75f}</ProjectGuid>
+    <ProjectGuid>{b8ef3f09-d891-4f77-b4b2-bda4b365bf82}</ProjectGuid>
     <RootNamespace>AdminCode</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -128,10 +128,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Admin_Code.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\Develop_Code\Develop_Code\Airport.h" />
-    <ClInclude Include="..\..\Develop_Code\Develop_Code\LoadCSV.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
