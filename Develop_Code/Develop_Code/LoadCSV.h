@@ -10,6 +10,8 @@ inline std::string toLower(const std::string& s) {
     return result;
 }
 
+int generateIdent(const std::vector<Airport>& airports);
+
 void loadCSV(const std::string& filename, std::vector<Airport>& airports);
 void printAirport(const Airport& a);
 void searchByCountry(const std::vector<Airport>& airports, const std::string& countryCode);

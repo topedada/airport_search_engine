@@ -3,6 +3,10 @@
 #include <sstream>
 #include <iostream>
 
+int generateIdent(const std::vector<Airport>& airports) {
+    return 1000 + static_cast<int>(airports.size());
+}
+
 // ---------------- Load CSV Implementation ----------------
 void loadCSV(const std::string& filename, std::vector<Airport>& airports) {
     std::ifstream file(filename);

@@ -1,4 +1,5 @@
 #include "Admin.h"
+#include "LoadCSV.h"   //  REQUIRED for generateIdent
 #include <iostream>
 #include <fstream>
 #include <limits>
@@ -55,7 +56,8 @@ void saveCSV(const std::string& filename, const std::vector<Airport>& airports) 
     file << "ident,type,name,elevation_ft,continent,iso_country,iso_region,municipality,icao_code,iata_code,gps_code,local_code,coordinates\n";
 
     for (const auto& a : airports) {
-        file << "0" << "," // still placeholder (your struct doesn't store ident)
+
+        file << a.ident << ","              //  FIXED (NO MORE 0)
             << a.type << ","
             << a.name << ","
             << a.elevation << ","
@@ -87,7 +89,7 @@ void adminAirportMenu(std::vector<Airport>& airports) {
         int choice;
         std::cin >> choice;
 
-        // 🔥 FIX LOOP BUG
+        // FIX LOOP BUG
         if (std::cin.fail()) {
             std::cin.clear();
             std::cin.ignore(10000, '\n');
@@ -97,9 +99,12 @@ void adminAirportMenu(std::vector<Airport>& airports) {
 
         std::cin.ignore(10000, '\n');
 
-        // -------- ADD --------
+        // -------- ADD AIRPORT --------
         if (choice == 1) {
             Airport a;
+
+            // 🔥 AUTO-GENERATE IDENT (FIX)
+            a.ident = std::to_string(generateIdent(airports));
 
             std::cout << "Name: ";
             std::getline(std::cin, a.name);
@@ -116,17 +121,17 @@ void adminAirportMenu(std::vector<Airport>& airports) {
             std::cout << "Municipality: ";
             std::getline(std::cin, a.municipality);
 
-            // 🔥 SAFE NUMERIC INPUT
+            // SAFE NUMERIC INPUT
             a.latitude = getDoubleInput("Latitude: ");
             a.longitude = getDoubleInput("Longitude: ");
             a.elevation = getIntInput("Elevation: ");
 
             airports.push_back(a);
 
-            std::cout << "Airport added.\n";
+            std::cout << "Airport added with ID: " << a.ident << "\n";
         }
 
-        // -------- DELETE --------
+        // -------- DELETE AIRPORT --------
         else if (choice == 2) {
             std::string code;
 
