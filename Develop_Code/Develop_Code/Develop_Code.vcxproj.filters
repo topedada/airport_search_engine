@@ -24,6 +24,9 @@
     <ClCompile Include="feature_csv_loading.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Admin_Code.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Airport.h">
@@ -33,6 +36,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LoadCSV.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Admin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
