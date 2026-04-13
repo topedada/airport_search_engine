@@ -2,18 +2,18 @@
 #include <string>
 
 struct Airport {
-    std::string ident;        
+    std::string ident;
     std::string type;
     std::string name;
-    int elevation;
-    std::string continent;    
-    std::string country;
-    std::string iso_region;   
+    double elevation;
+    std::string continent;
+    std::string iso_country;
+    std::string iso_region;
     std::string municipality;
-    std::string icao_code;
+    std::string icao;
     std::string iata;
-    std::string gps_code;
-    std::string local_code;
+    std::string gps;
+    std::string local;
     double latitude;
     double longitude;
 };

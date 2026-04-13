@@ -1,171 +1,132 @@
 #include "Admin.h"
-#include "LoadCSV.h"   //  REQUIRED for generateIdent
 #include <iostream>
 #include <fstream>
-#include <limits>
 
-// ---------------- SAFE NUMBER INPUT ----------------
-double getDoubleInput(const std::string& prompt) {
-    double value;
-
-    while (true) {
-        std::cout << prompt;
-        std::cin >> value;
-
-        if (std::cin.fail()) {
-            std::cin.clear();
-            std::cin.ignore(10000, '\n');
-            std::cout << "Invalid input. Numbers only.\n";
-        }
-        else {
-            std::cin.ignore(10000, '\n');
-            return value;
-        }
-    }
-}
+// ================= INPUT VALIDATION =================
 
 int getIntInput(const std::string& prompt) {
+
     int value;
 
     while (true) {
         std::cout << prompt;
-        std::cin >> value;
 
-        if (std::cin.fail()) {
-            std::cin.clear();
-            std::cin.ignore(10000, '\n');
-            std::cout << "Invalid input. Numbers only.\n";
-        }
-        else {
+        if (std::cin >> value) {
             std::cin.ignore(10000, '\n');
             return value;
         }
+
+        std::cout << "Invalid input. Must be a number.\n";
+        std::cin.clear();
+        std::cin.ignore(10000, '\n');
     }
 }
 
-// ---------------- SAVE CSV ----------------
+double getDoubleInput(const std::string& prompt) {
+
+    double value;
+
+    while (true) {
+        std::cout << prompt;
+
+        if (std::cin >> value) {
+            std::cin.ignore(10000, '\n');
+            return value;
+        }
+
+        std::cout << "Invalid input. Must be a number.\n";
+        std::cin.clear();
+        std::cin.ignore(10000, '\n');
+    }
+}
+
+// ================= SAVE CSV =================
+
 void saveCSV(const std::string& filename, const std::vector<Airport>& airports) {
 
     std::ofstream file(filename);
 
     if (!file.is_open()) {
-        std::cout << "Error opening file.\n";
+        std::cout << "Error opening file\n";
         return;
     }
 
-    file << "ident,type,name,elevation_ft,continent,iso_country,iso_region,municipality,icao_code,iata_code,gps_code,local_code,coordinates\n";
+    file << "ident,type,name,elevation_ft,continent,iso_country,iso_region,municipality,icao,iata,gps,local,coordinates\n";
 
     for (const auto& a : airports) {
-
-        file << a.ident << ","              //  FIXED (NO MORE 0)
+        file << a.ident << ","
             << a.type << ","
             << a.name << ","
             << a.elevation << ","
-            << "NA" << ","
-            << a.country << ","
-            << "NA" << ","
+            << a.continent << ","
+            << a.iso_country << ","
+            << a.iso_region << ","
             << a.municipality << ","
-            << "NA" << ","
+            << a.icao << ","
             << a.iata << ","
-            << "NA" << ","
-            << "NA" << ","
-            << a.latitude << ";" << a.longitude << "\n";
+            << a.gps << ","
+            << a.local << ","
+            << "\"" << a.latitude << "," << a.longitude << "\"\n";
     }
 
-    std::cout << "Saved successfully.\n";
+    std::cout << "CSV saved successfully\n";
 }
 
-// ---------------- ADMIN MENU ----------------
+// ================= ADMIN MENU =================
+
 void adminAirportMenu(std::vector<Airport>& airports) {
 
     while (true) {
-        std::cout << "\n--- ADMIN MENU ---\n";
+
+        std::cout << "\n====== ADMIN MENU ======\n";
         std::cout << "1. Add Airport\n";
-        std::cout << "2. Delete Airport\n";
-        std::cout << "3. Save\n";
-        std::cout << "4. Exit\n";
+        std::cout << "2. Save CSV\n";
+        std::cout << "3. Back\n";
         std::cout << "Choice: ";
 
         int choice;
-        std::cin >> choice;
 
-        // FIX LOOP BUG
-        if (std::cin.fail()) {
+        if (!(std::cin >> choice)) {
             std::cin.clear();
             std::cin.ignore(10000, '\n');
-            std::cout << "Invalid input.\n";
             continue;
         }
 
         std::cin.ignore(10000, '\n');
 
-        // -------- ADD AIRPORT --------
         if (choice == 1) {
+
             Airport a;
 
-            // 🔥 AUTO-GENERATE IDENT (FIX)
-            a.ident = std::to_string(generateIdent(airports));
+            std::cout << "IDENT: "; getline(std::cin, a.ident);
+            std::cout << "TYPE: "; getline(std::cin, a.type);
+            std::cout << "NAME: "; getline(std::cin, a.name);
 
-            std::cout << "Name: ";
-            std::getline(std::cin, a.name);
+            a.elevation = getDoubleInput("Elevation: ");
 
-            std::cout << "Country: ";
-            std::getline(std::cin, a.country);
+            std::cout << "CONTINENT: "; getline(std::cin, a.continent);
+            std::cout << "COUNTRY: "; getline(std::cin, a.iso_country);
+            std::cout << "REGION: "; getline(std::cin, a.iso_region);
+            std::cout << "MUNICIPALITY: "; getline(std::cin, a.municipality);
+            std::cout << "ICAO: "; getline(std::cin, a.icao);
+            std::cout << "IATA: "; getline(std::cin, a.iata);
+            std::cout << "GPS: "; getline(std::cin, a.gps);
+            std::cout << "LOCAL: "; getline(std::cin, a.local);
 
-            std::cout << "IATA: ";
-            std::getline(std::cin, a.iata);
-
-            std::cout << "Type: ";
-            std::getline(std::cin, a.type);
-
-            std::cout << "Municipality: ";
-            std::getline(std::cin, a.municipality);
-
-            // SAFE NUMERIC INPUT
             a.latitude = getDoubleInput("Latitude: ");
             a.longitude = getDoubleInput("Longitude: ");
-            a.elevation = getIntInput("Elevation: ");
 
             airports.push_back(a);
 
-            std::cout << "Airport added with ID: " << a.ident << "\n";
+            std::cout << "Airport added successfully\n";
         }
 
-        // -------- DELETE AIRPORT --------
         else if (choice == 2) {
-            std::string code;
-
-            std::cout << "Enter IATA code to delete: ";
-            std::getline(std::cin, code);
-
-            bool found = false;
-
-            for (int i = 0; i < airports.size(); i++) {
-                if (airports[i].iata == code) {
-                    airports.erase(airports.begin() + i);
-                    std::cout << "Deleted.\n";
-                    found = true;
-                    break;
-                }
-            }
-
-            if (!found) {
-                std::cout << "Airport not found.\n";
-            }
+            saveCSV("airports.csv", airports);
         }
 
-        // -------- SAVE --------
         else if (choice == 3) {
-            saveCSV("../../data/airports.csv", airports);
-        }
-
-        // -------- EXIT --------
-        else if (choice == 4) {
             break;
-        }
-
-        else {
-            std::cout << "Invalid option.\n";
         }
     }
 }

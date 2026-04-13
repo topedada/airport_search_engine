@@ -4,16 +4,16 @@
 #include <fstream>
 #include <cmath>
 
-// -------- Distance --------
-double toRadians(double degree) {
-    return degree * 3.141592653589793 / 180.0;
+double toRad(double d) {
+    return d * 3.141592653589793 / 180.0;
 }
 
 double calculateDistance(const Airport& a, const Airport& b) {
-    double lat1 = toRadians(a.latitude);
-    double lon1 = toRadians(a.longitude);
-    double lat2 = toRadians(b.latitude);
-    double lon2 = toRadians(b.longitude);
+
+    double lat1 = toRad(a.latitude);
+    double lon1 = toRad(a.longitude);
+    double lat2 = toRad(b.latitude);
+    double lon2 = toRad(b.longitude);
 
     double dLat = lat2 - lat1;
     double dLon = lon2 - lon1;
@@ -24,93 +24,61 @@ double calculateDistance(const Airport& a, const Airport& b) {
 
     double c = 2 * atan2(sqrt(h), sqrt(1 - h));
 
-    return 6371 * c; // KM
+    return 6371 * c;
 }
 
-// -------- Helper --------
-bool iataExists(const std::vector<Airport>& airports, const std::string& code) {
-    for (const auto& a : airports) {
-        if (toLower(a.iata) == toLower(code)) return true;
-    }
-    return false;
-}
-
-// -------- Book Ticket --------
 void bookTicket(const std::vector<Airport>& airports, std::vector<Booking>& bookings) {
-    std::string passenger, from, to;
 
-    std::cout << "Enter your name: ";
-    std::getline(std::cin, passenger);
+    std::string name, from, to;
 
-    std::cout << "Enter FROM airport IATA code: ";
+    std::cout << "Passenger name: ";
+    std::getline(std::cin, name);
+
+    std::cout << "From IATA: ";
     std::getline(std::cin, from);
 
-    std::cout << "Enter TO airport IATA code: ";
+    std::cout << "To IATA: ";
     std::getline(std::cin, to);
 
-    if (passenger.empty() || from.empty() || to.empty()) {
-        std::cout << "All fields are required.\n";
+    const Airport* a = nullptr;
+    const Airport* b = nullptr;
+
+    for (const auto& x : airports) {
+        if (toLower(x.iata) == toLower(from)) a = &x;
+        if (toLower(x.iata) == toLower(to)) b = &x;
+    }
+
+    if (!a || !b) {
+        std::cout << "Invalid airports\n";
         return;
     }
 
-    const Airport* fromAirport = nullptr;
-    const Airport* toAirport = nullptr;
+    double dist = calculateDistance(*a, *b);
 
-    for (const auto& a : airports) {
-        if (toLower(a.iata) == toLower(from)) fromAirport = &a;
-        if (toLower(a.iata) == toLower(to)) toAirport = &a;
-    }
+    bookings.push_back({ name, from, to, dist });
 
-    if (!fromAirport) {
-        std::cout << "FROM airport code not valid.\n";
-        return;
-    }
-
-    if (!toAirport) {
-        std::cout << "TO airport code not valid.\n";
-        return;
-    }
-
-    double distance = calculateDistance(*fromAirport, *toAirport);
-
-    bookings.push_back({ passenger, from, to, distance });
-
-    std::cout << "Booking confirmed for " << passenger
-        << " from " << from << " to " << to << "\n";
-    std::cout << "Distance: " << distance << " km\n";
+    std::cout << "Booking confirmed\nDistance: " << dist << " km\n";
 }
 
-// -------- View Bookings --------
 void viewBookings(const std::vector<Booking>& bookings) {
+
     if (bookings.empty()) {
-        std::cout << "No bookings yet.\n";
+        std::cout << "No flights booked yet\n";
         return;
     }
 
     for (const auto& b : bookings) {
-        std::cout << b.passenger << ": "
+        std::cout << b.passenger << " "
             << b.fromIATA << " -> "
-            << b.toIATA
-            << " | Distance: " << b.distance << " km\n";
+            << b.toIATA << " "
+            << b.distance << " km\n";
     }
 }
 
-// -------- Save Bookings --------
 void saveBookingsToCSV(const std::vector<Booking>& bookings, const std::string& filename) {
 
-    if (bookings.empty()) {
-        std::cout << "No bookings to save.\n";
-        return;
-    }
+    std::ofstream file(filename);
 
-    std::ofstream file(filename); 
-
-    if (!file.is_open()) {
-        std::cout << "Failed to open " << filename << "\n";
-        return;
-    }
-
-    // Header
     file << "Passenger,FromIATA,ToIATA,Distance\n";
 
     for (const auto& b : bookings) {
@@ -120,5 +88,5 @@ void saveBookingsToCSV(const std::vector<Booking>& bookings, const std::string& 
             << b.distance << "\n";
     }
 
-    std::cout << "Bookings saved successfully to " << filename << "\n";
+    std::cout << "Bookings saved\n";
 }

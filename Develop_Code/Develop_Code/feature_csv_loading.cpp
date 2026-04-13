@@ -2,121 +2,172 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <algorithm>
 
-int generateIdent(const std::vector<Airport>& airports) {
-    return 1000 + static_cast<int>(airports.size());
+// ================= LOWERCASE HELP =================
+std::string toLower(const std::string& s) {
+    std::string result = s;
+    std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+    return result;
 }
 
-// ---------------- Load CSV Implementation ----------------
+// ================= LOAD CSV =================
 void loadCSV(const std::string& filename, std::vector<Airport>& airports) {
+
     std::ifstream file(filename);
+
     if (!file.is_open()) {
-        std::cout << "Error opening file: " << filename << "\n";
+        std::cout << "Error opening CSV file\n";
         return;
     }
 
     std::string line;
-    getline(file, line); // skip header
+    std::getline(file, line); // skip header
 
-    while (getline(file, line)) {
+    while (std::getline(file, line)) {
+
         std::stringstream ss(line);
-        std::string token;
         Airport a;
 
-        getline(ss, token, ','); // ident
-        getline(ss, a.type, ',');
-        getline(ss, a.name, ',');
-        getline(ss, token, ','); // elevation
+        std::string elevationStr;
+        std::string coordinates;
 
-        // Safe conversion for elevation
+        std::getline(ss, a.ident, ',');
+        std::getline(ss, a.type, ',');
+        std::getline(ss, a.name, ',');
+        std::getline(ss, elevationStr, ',');
+        std::getline(ss, a.continent, ',');
+        std::getline(ss, a.iso_country, ',');
+        std::getline(ss, a.iso_region, ',');
+        std::getline(ss, a.municipality, ',');
+        std::getline(ss, a.icao, ',');
+        std::getline(ss, a.iata, ',');
+        std::getline(ss, a.gps, ',');
+        std::getline(ss, a.local, ',');
+        std::getline(ss, coordinates);
+
         try {
-            a.elevation = token.empty() ? 0 : std::stoi(token);
+            a.elevation = std::stod(elevationStr);
         }
         catch (...) {
             a.elevation = 0;
         }
 
-        getline(ss, token, ','); // continent
-        getline(ss, a.country, ',');
-        getline(ss, token, ','); // region
-        getline(ss, a.municipality, ',');
-        getline(ss, token, ','); // icao
-        getline(ss, a.iata, ',');
-        getline(ss, token, ','); // gps
-        getline(ss, token, ','); // local
-        getline(ss, token);       // coordinates
+        coordinates.erase(std::remove(coordinates.begin(), coordinates.end(), '\"'), coordinates.end());
 
-        // Remove surrounding quotes
-        if (!token.empty() && token.front() == '"') token.erase(0, 1);
-        if (!token.empty() && token.back() == '"') token.pop_back();
+        size_t pos = coordinates.find(',');
 
-        // Safe conversion for coordinates
-        std::stringstream coord(token);
-        std::string lat, lon;
-        getline(coord, lat, ',');
-        getline(coord, lon, ',');
-
-        try {
-            a.latitude = lat.empty() ? 0.0 : std::stod(lat);
+        if (pos != std::string::npos) {
+            try {
+                a.latitude = std::stod(coordinates.substr(0, pos));
+                a.longitude = std::stod(coordinates.substr(pos + 1));
+            }
+            catch (...) {
+                a.latitude = 0;
+                a.longitude = 0;
+            }
         }
-        catch (...) {
-            a.latitude = 0.0;
-        }
-
-        try {
-            a.longitude = lon.empty() ? 0.0 : std::stod(lon);
-        }
-        catch (...) {
-            a.longitude = 0.0;
+        else {
+            a.latitude = 0;
+            a.longitude = 0;
         }
 
         airports.push_back(a);
     }
 
-    std::cout << "Loaded " << airports.size() << " airports.\n";
+    std::cout << "Loaded " << airports.size() << " airports\n";
 }
 
-// ---------------- Print Function ----------------
-void printAirport(const Airport& a) {
-    std::cout << "Name: " << a.name << "\n";
-    std::cout << "Country: " << a.country << "\n";
-    std::cout << "IATA: " << a.iata << "\n";
-    std::cout << "Type: " << a.type << "\n";
-    std::cout << "Municipality: " << a.municipality << "\n";
-    std::cout << "Lat: " << a.latitude << ", Lon: " << a.longitude << "\n";
-    std::cout << "Elevation: " << a.elevation << "\n";
-    std::cout << "----------------------\n";
-}
+// ================= SEARCH BY NAME (CASE INSENSITIVE) =================
+void searchByName(const std::vector<Airport>& airports, const std::string& input) {
 
-// ---------------- Search Functions ----------------
-void searchByCountry(const std::vector<Airport>& airports, const std::string& countryCode) {
-    int count = 0;
+    bool found = false;
+
     for (const auto& a : airports) {
-        if (toLower(a.country) == toLower(countryCode)) {
-            printAirport(a);
-            if (++count >= 10) break;
+
+        if (toLower(a.name).find(toLower(input)) != std::string::npos) {
+
+            std::cout << "\n--- AIRPORT FOUND ---\n";
+            std::cout << "Name: " << a.name << "\n";
+            std::cout << "Ident: " << a.ident << "\n";
+            std::cout << "Type: " << a.type << "\n";
+            std::cout << "Elevation: " << a.elevation << "\n";
+            std::cout << "Continent: " << a.continent << "\n";
+            std::cout << "Country: " << a.iso_country << "\n";
+            std::cout << "Region: " << a.iso_region << "\n";
+            std::cout << "Municipality: " << a.municipality << "\n";
+            std::cout << "ICAO: " << a.icao << "\n";
+            std::cout << "IATA: " << a.iata << "\n";
+            std::cout << "GPS: " << a.gps << "\n";
+            std::cout << "Local: " << a.local << "\n";
+            std::cout << "Latitude: " << a.latitude << "\n";
+            std::cout << "Longitude: " << a.longitude << "\n";
+
+            found = true;
         }
     }
-    if (count == 0) std::cout << "No airports found.\n";
+
+    if (!found) {
+        std::cout << "No airport found\n";
+    }
 }
 
-void searchByName(const std::vector<Airport>& airports, const std::string& name) {
-    int count = 0;
+// ================= SEARCH BY IATA (CASE INSENSITIVE) =================
+void searchByIATA(const std::vector<Airport>& airports, const std::string& input) {
+
+    bool found = false;
+
     for (const auto& a : airports) {
-        if (toLower(a.name).find(toLower(name)) != std::string::npos) {
-            printAirport(a);
-            if (++count >= 10) break;
+
+        if (toLower(a.iata) == toLower(input)) {
+
+            std::cout << "\n--- AIRPORT FOUND ---\n";
+            std::cout << "Name: " << a.name << "\n";
+            std::cout << "Ident: " << a.ident << "\n";
+            std::cout << "Type: " << a.type << "\n";
+            std::cout << "Elevation: " << a.elevation << "\n";
+            std::cout << "Country: " << a.iso_country << "\n";
+            std::cout << "Region: " << a.iso_region << "\n";
+            std::cout << "ICAO: " << a.icao << "\n";
+            std::cout << "IATA: " << a.iata << "\n";
+            std::cout << "Latitude: " << a.latitude << "\n";
+            std::cout << "Longitude: " << a.longitude << "\n";
+
+            found = true;
         }
     }
-    if (count == 0) std::cout << "No airports found.\n";
+
+    if (!found) {
+        std::cout << "No airport found\n";
+    }
 }
 
-void searchByIATA(const std::vector<Airport>& airports, const std::string& code) {
+// ================= SEARCH BY COUNTRY (CASE INSENSITIVE) =================
+void searchByCountry(const std::vector<Airport>& airports, const std::string& input) {
+
+    bool found = false;
+
     for (const auto& a : airports) {
-        if (toLower(a.iata) == toLower(code)) {
-            printAirport(a);
-            return;
+
+        if (toLower(a.iso_country) == toLower(input)) {
+
+            std::cout << "\n--- AIRPORT FOUND ---\n";
+            std::cout << "Name: " << a.name << "\n";
+            std::cout << "Ident: " << a.ident << "\n";
+            std::cout << "Type: " << a.type << "\n";
+            std::cout << "Elevation: " << a.elevation << "\n";
+            std::cout << "Country: " << a.iso_country << "\n";
+            std::cout << "Region: " << a.iso_region << "\n";
+            std::cout << "ICAO: " << a.icao << "\n";
+            std::cout << "IATA: " << a.iata << "\n";
+            std::cout << "Latitude: " << a.latitude << "\n";
+            std::cout << "Longitude: " << a.longitude << "\n";
+
+            found = true;
         }
     }
-    std::cout << "No airport found.\n";
+
+    if (!found) {
+        std::cout << "No airports found in this country\n";
+    }
 }
