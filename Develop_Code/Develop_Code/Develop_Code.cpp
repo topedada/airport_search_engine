@@ -27,6 +27,7 @@ int main() {
         std::cout << "8. Exit\n";
         std::cout << "Choice: ";
 
+        // ✅ Safe input check
         if (!(std::cin >> choice)) {
             std::cin.clear();
             std::cin.ignore(10000, '\n');
@@ -36,44 +37,48 @@ int main() {
 
         std::cin.ignore(10000, '\n');
 
-        if (choice == 1) {
+        switch (choice) {
+
+        case 1:
             std::cout << "Enter country: ";
             std::getline(std::cin, input);
             searchByCountry(airports, input);
-        }
+            break;
 
-        else if (choice == 2) {
+        case 2:
             std::cout << "Enter name: ";
             std::getline(std::cin, input);
             searchByName(airports, input);
-        }
+            break;
 
-        else if (choice == 3) {
+        case 3:
             std::cout << "Enter IATA: ";
             std::getline(std::cin, input);
             searchByIATA(airports, input);
-        }
-
-        else if (choice == 4) {
-            bookTicket(airports, bookings);
-        }
-
-        else if (choice == 5) {
-            viewBookings(bookings);
-        }
-
-        else if (choice == 6) {
-            adminAirportMenu(airports);
-        }
-
-        else if (choice == 7) {
-            saveBookingsToCSV(bookings, "../../data/FlightRecords.csv");
-        }
-
-        else if (choice == 8) {
             break;
+
+        case 4:
+            bookTicket(airports, bookings);
+            break;
+
+        case 5:
+            viewBookings(bookings);
+            break;
+
+        case 6:
+            adminAirportMenu(airports); // 🔐 password handled inside
+            break;
+
+        case 7:
+            saveBookingsToCSV(bookings, "../../data/FlightRecords.csv");
+            break;
+
+        case 8:
+            std::cout << "Exiting program...\n";
+            return 0;
+
+        default:
+            std::cout << "Invalid choice\n";
         }
     }
-
-    return 0;
 }
