@@ -44,14 +44,21 @@ double getDoubleInput(const std::string& prompt) {
 
 void saveCSV(const std::string& filename, const std::vector<Airport>& airports) {
 
-    std::ofstream file(filename);
+    std::ifstream checkFile(filename);
+    bool isEmpty = checkFile.peek() == std::ifstream::traits_type::eof();
+    checkFile.close();
+
+    std::ofstream file(filename, std::ios::app);
 
     if (!file.is_open()) {
         std::cout << "Error opening file\n";
         return;
     }
 
-    file << "ident,type,name,elevation_ft,continent,iso_country,iso_region,municipality,icao,iata,gps,local,coordinates\n";
+    // write header ONLY if file is empty
+    if (isEmpty) {
+        file << "ident,type,name,elevation_ft,continent,iso_country,iso_region,municipality,icao,iata,gps,local,coordinates\n";
+    }
 
     for (const auto& a : airports) {
         file << a.ident << ","
@@ -69,7 +76,7 @@ void saveCSV(const std::string& filename, const std::vector<Airport>& airports) 
             << "\"" << a.latitude << "," << a.longitude << "\"\n";
     }
 
-    std::cout << "CSV saved successfully\n";
+    std::cout << "CSV appended successfully\n";
 }
 
 // ================= ADMIN MENU =================
