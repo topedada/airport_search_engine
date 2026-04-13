@@ -27,7 +27,6 @@ int main() {
         std::cout << "8. Exit\n";
         std::cout << "Choice: ";
 
-        // ✅ Safe input check
         if (!(std::cin >> choice)) {
             std::cin.clear();
             std::cin.ignore(10000, '\n');
@@ -65,9 +64,19 @@ int main() {
             viewBookings(bookings);
             break;
 
-        case 6:
-            adminAirportMenu(airports); // 🔐 password handled inside
+        case 6: {
+            std::string password;
+            std::cout << "Enter admin password: ";
+            std::getline(std::cin, password);
+
+            if (password == "password01") {
+                adminAirportMenu(airports);
+            }
+            else {
+                std::cout << "Incorrect password. Access denied.\n";
+            }
             break;
+        }
 
         case 7:
             saveBookingsToCSV(bookings, "../../data/FlightRecords.csv");
