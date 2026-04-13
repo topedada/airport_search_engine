@@ -3,10 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <cmath>
-
-double toRad(double d) {
-    return d * 3.141592653589793 / 180.0;
-}
+#include "MathUtils.h"
 
 double calculateDistance(const Airport& a, const Airport& b) {
 

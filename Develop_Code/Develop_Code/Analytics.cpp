@@ -1,5 +1,53 @@
 #include "Analytics.h"
 #include <iostream>
+#include <cmath>
+#include "MathUtils.h"
+
+void findNearestAirport(const std::vector<Airport>& airports) {
+
+    double lat, lon;
+
+    std::cout << "Enter latitude: ";
+    std::cin >> lat;
+
+    std::cout << "Enter longitude: ";
+    std::cin >> lon;
+
+    const Airport* nearest = nullptr;
+    double minDistance = 1e9;
+
+    double lat1 = toRad(lat);
+    double lon1 = toRad(lon);
+
+    for (const auto& a : airports) {
+
+        double lat2 = toRad(a.latitude);
+        double lon2 = toRad(a.longitude);
+
+        double dLat = lat2 - lat1;
+        double dLon = lon2 - lon1;
+
+        double h = sin(dLat / 2) * sin(dLat / 2) +
+            cos(lat1) * cos(lat2) *
+            sin(dLon / 2) * sin(dLon / 2);
+
+        double c = 2 * atan2(sqrt(h), sqrt(1 - h));
+
+        double distance = 6371 * c;
+
+        if (distance < minDistance) {
+            minDistance = distance;
+            nearest = &a;
+        }
+    }
+
+    if (nearest) {
+        std::cout << "\nNearest Airport:\n";
+        std::cout << nearest->name << "\n";
+        std::cout << "IATA: " << nearest->iata << "\n";
+        std::cout << "Distance: " << minDistance << " km\n";
+    }
+}
 
 void advancedMenu(std::vector<Airport>& airports) {
 
@@ -25,7 +73,18 @@ void advancedMenu(std::vector<Airport>& airports) {
 
         std::cin.ignore(10000, '\n');
 
-        if (choice == 7) return;
+        switch (choice) {
 
+        case 1:
+            findNearestAirport(airports);
+            break;
+
+        case 7:
+            return;
+
+        default:
+            std::cout << "Feature not implemented yet.\n";
+            break;
+        }
     }
 }
