@@ -129,7 +129,7 @@ void adminAirportMenu(std::vector<Airport>& airports) {
         }
 
         else if (choice == 2) {
-            saveCSV("airports.csv", airports);
+            saveCSV("../../data/airports.csv", airports);
         }
 
         else if (choice == 3) {
