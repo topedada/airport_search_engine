@@ -77,9 +77,18 @@ void viewBookings(const std::vector<Booking>& bookings) {
 
 void saveBookingsToCSV(const std::vector<Booking>& bookings, const std::string& filename) {
 
-    std::ofstream file(filename);
+    std::ofstream file(filename, std::ios::app);
 
-    file << "Passenger,FromIATA,ToIATA,Distance\n";
+    if (!file.is_open()) {
+        std::cout << "Error opening file\n";
+        return;
+    }
+
+    // Check if file is empty before writing header
+    file.seekp(0, std::ios::end);
+    if (file.tellp() == 0) {
+        file << "Passenger,FromIATA,ToIATA,Distance\n";
+    }
 
     for (const auto& b : bookings) {
         file << b.passenger << ","
@@ -88,5 +97,5 @@ void saveBookingsToCSV(const std::vector<Booking>& bookings, const std::string& 
             << b.distance << "\n";
     }
 
-    std::cout << "Bookings saved\n";
+    std::cout << "Bookings saved (appended)\n";
 }
