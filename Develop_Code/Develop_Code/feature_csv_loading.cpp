@@ -11,6 +11,50 @@ std::string toLower(const std::string& s) {
     return result;
 }
 
+std::string normaliseType(std::string s) {
+
+    std::string result;
+
+    for (char c : s) {
+
+        if (c == '_' || c == '-' || c == ' ') {
+            result += ' ';
+        }
+        else {
+            result += std::tolower(c);
+        }
+    }
+
+    return result;
+}
+
+void countAirportTypes(const std::vector<Airport>& airports) {
+
+    int large = 0;
+    int small = 0;
+    int heliport = 0;
+
+    for (const auto& a : airports) {
+
+        std::string type = normaliseType(a.type);
+
+        if (type.find("large") != std::string::npos) {
+            large++;
+        }
+        else if (type.find("small") != std::string::npos) {
+            small++;
+        }
+        else if (type.find("heliport") != std::string::npos) {
+            heliport++;
+        }
+    }
+
+    std::cout << "\n===== AIRPORT TYPE COUNT =====\n";
+    std::cout << "Large Airports: " << large << "\n";
+    std::cout << "Small Airports: " << small << "\n";
+    std::cout << "Heliports: " << heliport << "\n";
+}
+
 // ================= LOAD CSV =================
 void loadCSV(const std::string& filename, std::vector<Airport>& airports) {
 

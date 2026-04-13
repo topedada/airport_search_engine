@@ -1,6 +1,7 @@
 #include "Admin.h"
 #include <iostream>
 #include <fstream>
+#include <vector>
 
 // ================= INPUT VALIDATION =================
 
@@ -40,25 +41,24 @@ double getDoubleInput(const std::string& prompt) {
     }
 }
 
+// ================= LOWERCASE HELPER =================
+std::string toLower(std::string s) {
+    for (char& c : s) c = tolower(c);
+    return s;
+}
+
 // ================= SAVE CSV =================
 
 void saveCSV(const std::string& filename, const std::vector<Airport>& airports) {
 
-    std::ifstream checkFile(filename);
-    bool isEmpty = checkFile.peek() == std::ifstream::traits_type::eof();
-    checkFile.close();
-
-    std::ofstream file(filename, std::ios::app);
+    std::ofstream file(filename);
 
     if (!file.is_open()) {
         std::cout << "Error opening file\n";
         return;
     }
 
-    // write header ONLY if file is empty
-    if (isEmpty) {
-        file << "ident,type,name,elevation_ft,continent,iso_country,iso_region,municipality,icao,iata,gps,local,coordinates\n";
-    }
+    file << "ident,type,name,elevation_ft,continent,iso_country,iso_region,municipality,icao,iata,gps,local,coordinates\n";
 
     for (const auto& a : airports) {
         file << a.ident << ","
@@ -76,7 +76,62 @@ void saveCSV(const std::string& filename, const std::vector<Airport>& airports) 
             << "\"" << a.latitude << "," << a.longitude << "\"\n";
     }
 
-    std::cout << "CSV appended successfully\n";
+    std::cout << "CSV saved successfully\n";
+}
+
+// ================= REMOVE AIRPORT =================
+
+void removeAirportByIATA(const std::string& filename, std::vector<Airport>& airports) {
+
+    std::string code;
+    std::cout << "Enter IATA code to remove: ";
+    std::getline(std::cin, code);
+
+    std::vector<Airport> updated;
+    bool found = false;
+
+    for (const auto& a : airports) {
+        if (toLower(a.iata) != toLower(code)) {
+            updated.push_back(a);
+        }
+        else {
+            found = true;
+        }
+    }
+
+    if (!found) {
+        std::cout << "Airport not found\n";
+        return;
+    }
+
+    airports = updated;
+
+    std::ofstream file(filename);
+
+    if (!file.is_open()) {
+        std::cout << "Error opening file\n";
+        return;
+    }
+
+    file << "ident,type,name,elevation_ft,continent,iso_country,iso_region,municipality,icao,iata,gps,local,coordinates\n";
+
+    for (const auto& a : airports) {
+        file << a.ident << ","
+            << a.type << ","
+            << a.name << ","
+            << a.elevation << ","
+            << a.continent << ","
+            << a.iso_country << ","
+            << a.iso_region << ","
+            << a.municipality << ","
+            << a.icao << ","
+            << a.iata << ","
+            << a.gps << ","
+            << a.local << ","
+            << "\"" << a.latitude << "," << a.longitude << "\"\n";
+    }
+
+    std::cout << "Airport removed successfully\n";
 }
 
 // ================= ADMIN MENU =================
@@ -88,7 +143,8 @@ void adminAirportMenu(std::vector<Airport>& airports) {
         std::cout << "\n====== ADMIN MENU ======\n";
         std::cout << "1. Add Airport\n";
         std::cout << "2. Save CSV\n";
-        std::cout << "3. Back\n";
+        std::cout << "3. Remove Airport\n";
+        std::cout << "4. Back\n";
         std::cout << "Choice: ";
 
         int choice;
@@ -133,6 +189,10 @@ void adminAirportMenu(std::vector<Airport>& airports) {
         }
 
         else if (choice == 3) {
+            removeAirportByIATA("../../data/airports.csv", airports);
+        }
+
+        else if (choice == 4) {
             break;
         }
     }

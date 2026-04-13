@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Admin_Code.cpp" />
+    <ClCompile Include="Analytics.cpp" />
     <ClCompile Include="Book_A_Ticket.cpp" />
     <ClCompile Include="Develop_Code.cpp" />
     <ClCompile Include="feature_csv_loading.cpp" />
@@ -135,6 +136,7 @@
   <ItemGroup>
     <ClInclude Include="Admin.h" />
     <ClInclude Include="Airport.h" />
+    <ClInclude Include="Analytics.h" />
     <ClInclude Include="Book_A_Ticket.h" />
     <ClInclude Include="LoadCSV.h" />
   </ItemGroup>

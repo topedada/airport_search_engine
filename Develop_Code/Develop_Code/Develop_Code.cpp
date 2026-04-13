@@ -3,6 +3,7 @@
 #include "LoadCSV.h"
 #include "Book_A_Ticket.h"
 #include "Admin.h"
+#include "Analytics.h"
 
 int main() {
 
@@ -22,9 +23,11 @@ int main() {
         std::cout << "3. Search by IATA\n";
         std::cout << "4. Book Ticket\n";
         std::cout << "5. View Bookings\n";
-        std::cout << "6. Admin\n";
-        std::cout << "7. Save Bookings\n";
-        std::cout << "8. Exit\n";
+        std::cout << "6. Count Airport Types\n";
+        std::cout << "7. Advanced Options\n";
+        std::cout << "8. Admin\n";
+        std::cout << "9. Save Bookings\n";
+        std::cout << "10. Exit\n";
         std::cout << "Choice: ";
 
         if (!(std::cin >> choice)) {
@@ -63,8 +66,15 @@ int main() {
         case 5:
             viewBookings(bookings);
             break;
+        case 6:
+            countAirportTypes(airports);
+            break;
 
-        case 6: {
+        case 7:
+            advancedMenu(airports);
+            break;
+
+        case 8: {
             std::string password;
             std::cout << "Enter admin password: ";
             std::getline(std::cin, password);
@@ -78,11 +88,11 @@ int main() {
             break;
         }
 
-        case 7:
+        case 9:
             saveBookingsToCSV(bookings, "../../data/FlightRecords.csv");
             break;
 
-        case 8:
+        case 10:
             std::cout << "Exiting program...\n";
             return 0;
 

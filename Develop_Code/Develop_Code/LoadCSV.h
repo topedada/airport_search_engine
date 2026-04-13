@@ -7,6 +7,8 @@
 // ================= CSV =================
 void loadCSV(const std::string& filename, std::vector<Airport>& airports);
 
+void countAirportTypes(const std::vector<Airport>& airports);
+
 // ================= HELPERS =================
 std::string toLower(const std::string& s);
 
