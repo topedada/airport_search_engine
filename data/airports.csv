@@ -203,7 +203,6 @@ ident,type,name,elevation_ft,continent,iso_country,iso_region,municipality,icao,
 03MS,heliport,Vicksburg Medical Center Heliport,110,NA,US,US-MS,Vicksburg,,,03MS,03MS,"32.3188,-90.8832"
 03MT,small_airport,Cascade Field,3580,NA,US,US-MT,Cascade,,,3MT7,3MT7,"47.2673,-111.717"
 03MU,small_airport,McDonnell Airport,874,NA,US,US-MO,Archie,,,03MU,03MU,"38.4925,-94.4125"
-03N,small_airport,Utirik Airport,4,OC,MH,MH-UTI,Utirik Island,,UTK,03N,03N,"11.2222,169.851"
 03NC,small_airport,Pilots Ridge Airport,35,NA,US,US-NC,Carolina Beach,,,03NC,03NC,"34.1042,-77.9059"
 03ND,small_airport,Olafson Brothers Airport,1045,NA,US,US-ND,Edinburg,,,03ND,03ND,"48.6264,-97.829"
 03NE,small_airport,Hyde Ranch Airport,2430,NA,US,US-NE,Comstock,,,03NE,03NE,"41.5464,-99.3312"
