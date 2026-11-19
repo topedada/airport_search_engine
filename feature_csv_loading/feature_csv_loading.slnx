@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="feature_csv_loading/feature_csv_loading.vcxproj" Id="a4ff9d67-f25e-40d7-ba26-10d2730e63c4" />
+</Solution>
